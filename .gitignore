@@ -10,3 +10,6 @@ public/uploads
 *.log
 .DS_Store
 .claude/
+
+.vercel
+.env*
