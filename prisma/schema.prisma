@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// SQLite has no native enum type, so the fields below are plain strings.
+// The allowed values are enforced in the app layer — see src/types/models.ts
+// for the corresponding TypeScript union types:
+//   role:             "TEACHER" | "STUDENT"
+//   Lesson.status:    "IN_PROGRESS" | "MASTERED" | "REVIEW_NEEDED"
+//   Homework.status:  "TODO" | "IN_PROGRESS" | "CHECKING" | "DONE"
+//   attendanceStatus: "CONDUCTED" | "MISSED" | "RESCHEDULED"
+//   tariffPlan:       "INDIVIDUAL_60" | "INDIVIDUAL_45" | "PAIR_60" | "PAIR_45"
+//   paymentStatus:    "PAID" | "UNPAID"
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String
+  createdAt    DateTime @default(now())
+
+  // For a STUDENT: the teacher assigned to them. For a TEACHER: unused.
+  teacher   TeacherProfile? @relation("StudentsOfTeacher", fields: [teacherId], references: [id])
+  teacherId String?
+
+  // For a TEACHER: their own public profile / login link, used to scope
+  // their access to only the students assigned to them. For a STUDENT: unused.
+  profile   TeacherProfile? @relation("TeacherLogin", fields: [profileId], references: [id])
+  profileId String?         @unique
+
+  lessons  Lesson[]            @relation("StudentLessons")
+  homework Homework[]          @relation("StudentHomework")
+  payments PaymentAttendance[] @relation("StudentPayments")
+
+  @@index([teacherId])
+}
+
+// "Викладачі" (Our Team) — public teacher profiles, scalable to a multi-teacher studio.
+// Every student is linked to a specific teacher via User.teacherId.
+model TeacherProfile {
+  id          String   @id @default(cuid())
+  name        String
+  title       String
+  bio         String
+  photoUrl    String?
+  // Bullet points, one per line — rendered as a list, not a hardcoded blurb.
+  credentials String
+  philosophy  String
+  specialties String
+  instagram   String?
+  // Experience is derived at read time from this date — never store a static "X years" value.
+  practicingSince DateTime
+  isFounder       Boolean  @default(false)
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  students     User[] @relation("StudentsOfTeacher")
+  loginAccount User?  @relation("TeacherLogin")
+
+  @@map("Teachers_Profiles")
+}
+
+model Lesson {
+  id               String   @id @default(cuid())
+  student          User     @relation("StudentLessons", fields: [studentId], references: [id], onDelete: Cascade)
+  studentId        String
+  date             DateTime
+  grammar          String
+  vocabulary       String
+  readingListening String
+  speaking         String
+  writing          String
+  status           String   @default("IN_PROGRESS")
+  lessonLink       String?
+  homework         Homework[]
+  // Words assigned during this lesson, grouped into dated blocks (e.g. "learn
+  // by 20.07") — separate from the per-homework "Words to learn" block.
+  vocabBlocks      VocabBlock[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([studentId])
+}
+
+model Homework {
+  id               String   @id @default(cuid())
+  lesson           Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lessonId         String
+  student          User     @relation("StudentHomework", fields: [studentId], references: [id], onDelete: Cascade)
+  studentId        String
+  title            String
+  deadline         DateTime
+  taskContent      String
+  status           String   @default("TODO")
+  audioUrl         String?
+  feedbackText     String?
+  feedbackAudioUrl String?
+  vocabItems       VocabItem[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([studentId])
+  @@index([lessonId])
+}
+
+// A batch of words assigned in one lesson, with its own "learn by" date and
+// completion state — e.g. "assigned 15.07, learn by 20.07".
+model VocabBlock {
+  id         String      @id @default(cuid())
+  lesson     Lesson      @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lessonId   String
+  dueDate    DateTime
+  learned    Boolean     @default(false)
+  vocabItems VocabItem[]
+  createdAt  DateTime    @default(now())
+
+  @@index([lessonId])
+}
+
+// Belongs to exactly one parent: a Homework task ("Words to learn" for that
+// exercise) or a VocabBlock (words assigned in a lesson, due by a set date).
+model VocabItem {
+  id          String      @id @default(cuid())
+  homework    Homework?   @relation(fields: [homeworkId], references: [id], onDelete: Cascade)
+  homeworkId  String?
+  block       VocabBlock? @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  blockId     String?
+  english     String
+  translation String
+  sortOrder   Int         @default(0)
+
+  @@index([blockId])
+}
+
+model PaymentAttendance {
+  id               String   @id @default(cuid())
+  student          User     @relation("StudentPayments", fields: [studentId], references: [id], onDelete: Cascade)
+  studentId        String
+  lessonLabel      String
+  date             DateTime
+  attendanceStatus String   @default("CONDUCTED")
+  tariffPlan       String
+  paymentStatus    String   @default("UNPAID")
+  amount           Float?
+  createdAt        DateTime @default(now())
+
+  @@index([studentId])
+}
