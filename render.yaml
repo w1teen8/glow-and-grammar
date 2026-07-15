@@ -1,0 +1,31 @@
+databases:
+  - name: glow-and-grammar-db
+    plan: free
+    postgresMajorVersion: "16"
+
+services:
+  - type: web
+    name: glow-and-grammar
+    runtime: node
+    plan: free
+    buildCommand: npm install && npx prisma generate && npm run build
+    # RENDER_EXTERNAL_URL is injected automatically by Render for every web
+    # service — reused here as NEXTAUTH_URL so nothing has to be hardcoded.
+    startCommand: >-
+      sh -c "export NEXTAUTH_URL=$RENDER_EXTERNAL_URL &&
+      npx prisma db push --accept-data-loss --skip-generate &&
+      npm run db:seed &&
+      npm run start"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: glow-and-grammar-db
+          property: connectionString
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: TEACHER_EMAIL
+        value: milena@glowandgrammar.com
+      - key: TEACHER_PASSWORD
+        generateValue: true
+      - key: NODE_ENV
+        value: production

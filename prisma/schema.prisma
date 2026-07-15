@@ -3,13 +3,13 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// SQLite has no native enum type, so the fields below are plain strings.
-// The allowed values are enforced in the app layer — see src/types/models.ts
-// for the corresponding TypeScript union types:
+// Kept as plain strings (not native Postgres enums) — allowed values are
+// enforced in the app layer instead. See src/types/models.ts for the
+// corresponding TypeScript union types:
 //   role:             "TEACHER" | "STUDENT"
 //   Lesson.status:    "IN_PROGRESS" | "MASTERED" | "REVIEW_NEEDED"
 //   Homework.status:  "TODO" | "IN_PROGRESS" | "CHECKING" | "DONE"
