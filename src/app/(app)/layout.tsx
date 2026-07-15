@@ -1,5 +1,9 @@
 import Navbar from "@/components/Navbar";
 
+// Every page under here is session- and query-param-driven per user —
+// never statically prerendered.
+export const dynamic = "force-dynamic";
+
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen">

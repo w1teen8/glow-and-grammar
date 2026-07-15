@@ -31,7 +31,7 @@ export const authOptions: AuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
-          role: user.role,
+          role: user.role as Role,
           profileId: user.profileId,
           // The founder is the only full admin — other teacher accounts are
           // scoped to the students assigned to them.
