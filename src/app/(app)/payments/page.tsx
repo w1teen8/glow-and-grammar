@@ -64,6 +64,21 @@ export default function PaymentsPage() {
         )}
       </div>
 
+      {!isTeacher && (
+        <p className="mb-6 text-sm text-olive-500">
+          Питання щодо оплати — пишіть Мілєні особисто в{" "}
+          <a
+            href="https://www.instagram.com/glowwgrammar"
+            target="_blank"
+            rel="noreferrer"
+            className="text-pink-700 underline hover:text-pink-500"
+          >
+            Instagram
+          </a>
+          .
+        </p>
+      )}
+
       {!loading && entries.length > 0 && (
         <div className="mb-6 flex flex-wrap gap-4 text-sm">
           <SummaryPill label="Записів" value={String(entries.length)} />
