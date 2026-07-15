@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Glow & Grammar</title>
+<meta name="description" content="Персональний освітній простір для учнів школи англійської мови Glow & Grammar." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          olive: { DEFAULT: "#616d4e", 50: "#f3f4f0", 100: "#e4e7dc", 300: "#a8b096", 500: "#616d4e", 700: "#4a533b", 900: "#333a29" },
+          cream: { DEFAULT: "#f6f4f0", 100: "#fdfcfb" },
+          pink: { DEFAULT: "#e3b4c7", 50: "#faf0f4", 300: "#edcbd9", 500: "#e3b4c7", 700: "#c98aa4" },
+        },
+        fontFamily: {
+          sans: ["Manrope", "sans-serif"],
+          display: ["Literata", "serif"],
+        },
+        boxShadow: {
+          soft: "0 1px 2px rgba(51,58,41,0.05), 0 10px 26px -10px rgba(97,109,78,0.20)",
+          card: "0 2px 4px rgba(51,58,41,0.05), 0 20px 44px -14px rgba(97,109,78,0.26)",
+        },
+        borderRadius: { xl2: "1.25rem" },
+      },
+    },
+  };
+</script>
+<style>
+  body { background-color: #f6f4f0; }
+</style>
+</head>
+<body class="font-sans text-olive-900 antialiased">
+
+  <div class="min-h-screen">
+    <header class="border-b border-olive/10 px-4 py-5 sm:px-8">
+      <div class="mx-auto flex max-w-5xl items-center justify-between">
+        <p class="font-display text-lg font-semibold tracking-tight text-olive-900">Glow &amp; Grammar</p>
+        <nav class="flex items-center gap-2">
+          <a href="https://www.instagram.com/glowwgrammar" target="_blank" rel="noreferrer"
+             class="rounded-full border border-olive/30 px-4 py-1.5 text-sm text-olive-700 hover:bg-olive/10">Вхід</a>
+          <a href="https://www.instagram.com/glowwgrammar" target="_blank" rel="noreferrer"
+             class="rounded-full bg-pink px-4 py-1.5 text-sm font-medium text-olive-900 shadow-soft hover:brightness-95">Реєстрація</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-olive-500 via-olive-700 to-olive-900 px-4 py-20 text-cream sm:px-8 sm:py-28">
+      <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div class="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-pink-300/15 blur-3xl"></div>
+        <div class="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-cream/5 blur-3xl"></div>
+      </div>
+      <div class="relative mx-auto max-w-5xl">
+        <span id="experience-badge" class="inline-block rounded-full border border-cream/25 bg-cream/5 px-3 py-1 text-xs font-medium uppercase tracking-wide text-cream/80"></span>
+        <h1 class="mt-6 max-w-2xl font-display text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
+          Вільно говори англійською разом із Glow &amp; Grammar
+        </h1>
+        <p class="mt-6 max-w-xl text-base leading-relaxed text-cream/80">
+          Персональний цифровий кабінет для навчання: програма занять, домашні завдання, слова для
+          вивчення та фінансовий баланс — в одному місці.
+        </p>
+        <div class="mt-9 flex flex-wrap gap-3">
+          <a href="https://www.instagram.com/glowwgrammar" target="_blank" rel="noreferrer"
+             class="rounded-full bg-pink px-7 py-3 text-sm font-semibold text-olive-900 shadow-lg hover:-translate-y-0.5 hover:brightness-95">Записатись на урок</a>
+          <a href="https://www.instagram.com/glowwgrammar" target="_blank" rel="noreferrer"
+             class="rounded-full border border-cream/40 px-7 py-3 text-sm font-medium text-cream hover:-translate-y-0.5 hover:bg-cream/10">Увійти в кабінет</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tariffs -->
+    <section class="px-4 py-16 sm:px-8">
+      <div class="mx-auto max-w-5xl">
+        <p class="text-xs font-medium uppercase tracking-[0.3em] text-olive-400">Формати занять</p>
+        <h2 class="mt-2 font-display text-3xl font-semibold tracking-tight text-olive-900 sm:text-4xl">
+          Оберіть, що підходить саме вам
+        </h2>
+        <div class="mt-9 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="group relative flex flex-col overflow-hidden rounded-xl2 border border-olive/10 bg-white p-6 shadow-soft hover:-translate-y-1 hover:shadow-card">
+            <span class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink to-pink-300"></span>
+            <h3 class="text-base font-semibold text-olive-800">Індивідуальні 60 хв</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-olive-400">Персональні заняття один на один — повна година у фокусі на ваших цілях.</p>
+            <a href="https://www.instagram.com/glowwgrammar" target="_blank" rel="noreferrer" class="mt-5 rounded-full bg-pink px-4 py-2 text-center text-xs font-semibold text-olive-900 shadow-soft group-hover:brightness-95">Дізнатись про доступ</a>
+          </div>
+          <div class="group relative flex flex-col overflow-hidden rounded-xl2 border border-olive/10 bg-white p-6 shadow-soft hover:-translate-y-1 hover:shadow-card">
+            <span class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink to-pink-300"></span>
+            <h3 class="text-base font-semibold text-olive-800">Індивідуальні 45 хв</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-olive-400">Компактний формат для щільного графіка — 45 хвилин індивідуальної роботи.</p>
+            <a href="https://www.instagram.com/glowwgrammar" target="_blank" rel="noreferrer" class="mt-5 rounded-full bg-pink px-4 py-2 text-center text-xs font-semibold text-olive-900 shadow-soft group-hover:brightness-95">Дізнатись про доступ</a>
+          </div>
+          <div class="group relative flex flex-col overflow-hidden rounded-xl2 border border-olive/10 bg-white p-6 shadow-soft hover:-translate-y-1 hover:shadow-card">
+            <span class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink to-pink-300"></span>
+            <h3 class="text-base font-semibold text-olive-800">У парі 60 хв</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-olive-400">Заняття у парі — разом веселіше, повна година живої практики.</p>
+            <a href="https://www.instagram.com/glowwgrammar" target="_blank" rel="noreferrer" class="mt-5 rounded-full bg-pink px-4 py-2 text-center text-xs font-semibold text-olive-900 shadow-soft group-hover:brightness-95">Дізнатись про доступ</a>
+          </div>
+          <div class="group relative flex flex-col overflow-hidden rounded-xl2 border border-olive/10 bg-white p-6 shadow-soft hover:-translate-y-1 hover:shadow-card">
+            <span class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink to-pink-300"></span>
+            <h3 class="text-base font-semibold text-olive-800">У парі 45 хв</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-olive-400">Заняття у парі, стислий формат — 45 хвилин активної розмовної практики.</p>
+            <a href="https://www.instagram.com/glowwgrammar" target="_blank" rel="noreferrer" class="mt-5 rounded-full bg-pink px-4 py-2 text-center text-xs font-semibold text-olive-900 shadow-soft group-hover:brightness-95">Дізнатись про доступ</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature grid -->
+    <section class="mx-auto max-w-5xl px-4 py-16 sm:px-8">
+      <p class="text-xs font-medium uppercase tracking-[0.3em] text-olive-300">Що всередині кабінету</p>
+      <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
+
+        <div class="relative flex flex-col items-center overflow-hidden rounded-xl2 border border-olive/10 bg-white/70 p-5 text-center shadow-soft hover:-translate-y-1 hover:bg-white hover:shadow-card">
+          <span class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink to-pink-300"></span>
+          <div class="mb-4 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-pink-50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-8 w-8 text-pink-700"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M4.125 6.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 5.25a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 5.25a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
+          </div>
+          <h3 class="text-base font-semibold text-olive-800">Syllabus Tracker</h3>
+          <p class="mt-2 text-sm leading-relaxed text-olive-400">Програма курсу: теми, які ми вивчаємо зараз та пройшли раніше.</p>
+        </div>
+
+        <div class="relative flex flex-col items-center overflow-hidden rounded-xl2 border border-olive/10 bg-white/70 p-5 text-center shadow-soft hover:-translate-y-1 hover:bg-white hover:shadow-card">
+          <span class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink to-pink-300"></span>
+          <div class="mb-4 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-pink-50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-8 w-8 text-pink-700"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.95-8.96a1.13 1.13 0 0 1 1.59 0L21.75 12M4.5 9.75v10.13c0 .62.5 1.13 1.13 1.13H9.75v-4.88c0-.62.5-1.12 1.13-1.12h2.25c.62 0 1.12.5 1.12 1.12V21h4.13c.62 0 1.12-.5 1.12-1.13V9.75M8.25 21h8.25"/></svg>
+          </div>
+          <h3 class="text-base font-semibold text-olive-800">Homework Corner</h3>
+          <p class="mt-2 text-sm leading-relaxed text-olive-400">Завдання, аудіовідповіді та фідбек від викладача.</p>
+        </div>
+
+        <div class="relative flex flex-col items-center overflow-hidden rounded-xl2 border border-olive/10 bg-white/70 p-5 text-center shadow-soft hover:-translate-y-1 hover:bg-white hover:shadow-card">
+          <span class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink to-pink-300"></span>
+          <div class="mb-4 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-pink-50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-8 w-8 text-pink-700"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.04A8.97 8.97 0 0 0 6 3.75c-1.05 0-2.06.18-3 .512v14.25A8.99 8.99 0 0 1 6 18c2.3 0 4.41.87 6 2.29m0-14.25a8.97 8.97 0 0 1 6-2.29c1.05 0 2.06.18 3 .512v14.25A8.99 8.99 0 0 0 18 18a8.97 8.97 0 0 0-6 2.29m0-14.25v14.25"/></svg>
+          </div>
+          <h3 class="text-base font-semibold text-olive-800">Vocabulary</h3>
+          <p class="mt-2 text-sm leading-relaxed text-olive-400">Слова, додані на занятті, блоками — щоб вивчити їх до наступного.</p>
+        </div>
+
+        <div class="relative flex flex-col items-center overflow-hidden rounded-xl2 border border-olive/10 bg-white/70 p-5 text-center shadow-soft hover:-translate-y-1 hover:bg-white hover:shadow-card">
+          <span class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink to-pink-300"></span>
+          <div class="mb-4 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-pink-50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-8 w-8 text-pink-700"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z"/></svg>
+          </div>
+          <h3 class="text-base font-semibold text-olive-800">Payments</h3>
+          <p class="mt-2 text-sm leading-relaxed text-olive-400">Календар занять та фінансовий баланс: що проведено, що оплачено.</p>
+        </div>
+
+        <div class="relative flex flex-col items-center overflow-hidden rounded-xl2 border border-olive/10 bg-white/70 p-5 text-center shadow-soft hover:-translate-y-1 hover:bg-white hover:shadow-card">
+          <span class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink to-pink-300"></span>
+          <div class="mb-4 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-pink-50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-8 w-8 text-pink-700"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.09 9.09 0 0 0 3.74-.48 3 3 0 0 0-4.68-2.72M18.94 18.72q.06.34.06.7A11.94 11.94 0 0 1 12 21c-2.17 0-4.21-.58-5.96-1.58a6.06 6.06 0 0 1-.04-.7m12 0a5.97 5.97 0 0 0-.94-3.2m0 0A6 6 0 0 0 12 12.75a6 6 0 0 0-5.06 2.77m0 0a3 3 0 0 0-4.68 2.72 9 9 0 0 0 3.74.48m.94-3.2a5.97 5.97 0 0 0-.94 3.2M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0m6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0m-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0"/></svg>
+          </div>
+          <h3 class="text-base font-semibold text-olive-800">Teachers</h3>
+          <p class="mt-2 text-sm leading-relaxed text-olive-400">Команда, що стоїть за платформою.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Founder highlight -->
+    <section class="px-4 py-16 sm:px-8">
+      <div class="mx-auto max-w-5xl overflow-hidden rounded-xl2 border border-olive/10 bg-white p-8 shadow-card sm:p-10">
+        <div class="flex flex-col items-start gap-7 sm:flex-row sm:items-center">
+          <div class="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-pink bg-olive-100 text-2xl font-semibold text-olive-500">
+            М
+          </div>
+          <div>
+            <h2 class="font-display text-2xl font-semibold tracking-tight text-olive-900">Мілєна</h2>
+            <p class="text-sm font-medium text-pink-700">Засновниця платформи &amp; Senior Methodologist</p>
+            <p id="founder-experience" class="mt-1 text-xs font-medium uppercase tracking-wide text-olive-400"></p>
+            <p class="mt-3 max-w-2xl text-sm leading-relaxed text-olive-600">
+              Мілєна — засновниця Glow &amp; Grammar та Senior Methodologist з фокусом на підлітках 8–18 років.
+              Поєднує глибоку методологічну підготовку за стандартами Cambridge та Oxford із живою практикою в
+              міжнародному англомовному середовищі, вибудовуючи для кожного учня персональну траєкторію до
+              вільного, впевненого мовлення.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <span class="rounded-full border border-olive/20 bg-cream px-3 py-1 text-xs text-olive-600">Комунікативна методика</span>
+              <span class="rounded-full border border-olive/20 bg-cream px-3 py-1 text-xs text-olive-600">Інтерактивний формат</span>
+              <span class="rounded-full border border-olive/20 bg-cream px-3 py-1 text-xs text-olive-600">Швидкий прогрес</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-5xl px-4 pb-4 sm:px-8">
+      <div class="rounded-xl2 border border-dashed border-olive/25 bg-white/60 px-6 py-4 text-center text-xs text-olive-400">
+        Це демо-версія лендингу. Особистий кабінет (вхід, домашні завдання, оплати) підключається окремо.
+      </div>
+    </div>
+
+    <footer class="border-t border-olive/10 px-4 py-10 text-center text-olive-400 sm:px-8">
+      <p class="text-base font-medium text-olive-600">© <span id="year"></span> Glow &amp; Grammar</p>
+      <p class="mt-2 text-base">Розробка сайту та адміністрування — Даніїл Заболотний</p>
+    </footer>
+  </div>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // Same dynamic-experience logic as the live app (src/lib/experience.ts) —
+  // computed from fixed anchor dates, never a hardcoded year count.
+  function yearsSince(anchor, now) {
+    let years = now.getFullYear() - anchor.getFullYear();
+    const anniversaryPassed =
+      now.getMonth() > anchor.getMonth() ||
+      (now.getMonth() === anchor.getMonth() && now.getDate() >= anchor.getDate());
+    if (!anniversaryPassed) years -= 1;
+    return Math.max(years, 0);
+  }
+
+  function pluralizeYearsUk(years) {
+    const mod10 = years % 10;
+    const mod100 = years % 100;
+    if (mod100 >= 11 && mod100 <= 14) return "років";
+    if (mod10 === 1) return "рік";
+    if (mod10 >= 2 && mod10 <= 4) return "роки";
+    return "років";
+  }
+
+  const now = new Date();
+  const practicingSince = new Date("2021-07-09T00:00:00.000Z");
+  const teachingSince = new Date("2025-07-09T00:00:00.000Z");
+
+  const practiceYears = yearsSince(practicingSince, now);
+  const teachingYears = yearsSince(teachingSince, now);
+
+  const practiceLabel = `${practiceYears}+ ${pluralizeYearsUk(practiceYears)} активної практики`;
+  const teachingLabel = `${teachingYears}+ ${pluralizeYearsUk(teachingYears)} досвіду викладання`;
+
+  document.getElementById("experience-badge").textContent = practiceLabel;
+  document.getElementById("founder-experience").textContent = `${practiceLabel} | ${teachingLabel}`;
+</script>
+</body>
+</html>
