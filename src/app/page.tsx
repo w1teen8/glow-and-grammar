@@ -139,7 +139,7 @@ export default async function RootPage() {
 
       {/* Feature grid — same container as the tariffs above, so both rows
           share the same left/right edges. */}
-      <section className="mx-auto max-w-5xl px-4 py-16 sm:px-0">
+      <section className="mx-auto max-w-5xl px-0 py-16 sm:px-0">
         <p className="text-xs font-medium uppercase tracking-[0.3em] text-olive-300">Що всередині кабінету</p>
         <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
           {FEATURES.map((f) => (

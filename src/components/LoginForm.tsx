@@ -30,6 +30,12 @@ export default function LoginForm() {
 
   return (
     <div>
+      <Link
+        href="/"
+        className="mb-6 inline-block text-xs font-medium text-olive-400 underline hover:text-olive-600"
+      >
+        ← На головну
+      </Link>
       <form onSubmit={handleSubmit}>
         <p className="mb-6 text-xs font-semibold uppercase tracking-[0.3em] text-olive-300">Вхід</p>
 
