@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Вхід · Glow & Grammar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          olive: { DEFAULT: "#616d4e", 50: "#f3f4f0", 100: "#e4e7dc", 300: "#a8b096", 500: "#616d4e", 700: "#4a533b", 900: "#333a29" },
+          cream: { DEFAULT: "#f6f4f0", 100: "#fdfcfb" },
+          pink: { DEFAULT: "#e3b4c7", 50: "#faf0f4", 300: "#edcbd9", 500: "#e3b4c7", 700: "#c98aa4" },
+        },
+        fontFamily: { sans: ["Manrope", "sans-serif"], display: ["Literata", "serif"] },
+      },
+    },
+  };
+</script>
+<style>body { background-color: #f6f4f0; }</style>
+</head>
+<body class="font-sans text-olive-900 antialiased">
+
+  <div class="grid min-h-screen sm:grid-cols-[2fr_1fr]">
+    <div class="flex flex-col justify-center gap-9 bg-gradient-to-br from-olive-500 via-olive-700 to-olive-900 px-8 py-16 text-cream sm:px-20">
+      <div class="mx-auto w-full max-w-lg">
+        <a href="index.html" class="text-xs font-medium uppercase tracking-[0.3em] text-cream/70 hover:text-cream">← Школа англійської мови</a>
+        <h1 class="mt-5 font-display text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">Glow &amp; Grammar</h1>
+        <span class="mt-5 block h-1 w-16 rounded-full bg-gradient-to-r from-pink to-pink-300"></span>
+
+        <div class="mt-9 flex items-start gap-4 border-t border-cream/20 pt-7">
+          <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-pink bg-olive-900 text-lg font-semibold text-cream/80">М</div>
+          <div>
+            <p class="text-lg font-semibold">Мілєна</p>
+            <p class="text-sm text-cream/70">Засновниця платформи &amp; Senior Methodologist</p>
+            <p id="founder-experience" class="mt-1 text-sm font-medium text-pink-300"></p>
+          </div>
+        </div>
+
+        <div class="mt-9 border-t border-cream/20 pt-7">
+          <p class="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-cream/60">Що в кабінеті</p>
+          <ul class="space-y-2.5 text-sm text-cream/85">
+            <li class="flex gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-pink"></span>Syllabus Tracker — програма занять: що пройшли і що попереду</li>
+            <li class="flex gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-pink"></span>Homework Corner — завдання, аудіовідповіді та фідбек</li>
+            <li class="flex gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-pink"></span>Vocabulary — списки слів після кожного заняття з дедлайном на вивчення</li>
+            <li class="flex gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-pink"></span>Payment &amp; Attendance — календар занять і статус оплат</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col justify-center bg-white px-8 py-16 sm:px-16">
+      <div class="mx-auto w-full max-w-sm">
+        <a href="index.html" class="mb-6 inline-block text-xs font-medium text-olive-400 underline hover:text-olive-600">← На головну</a>
+
+        <form id="login-form">
+          <p class="mb-6 text-xs font-semibold uppercase tracking-[0.3em] text-olive-300">Вхід</p>
+
+          <label class="mb-1 block text-sm font-medium text-olive-700">Email</label>
+          <input type="email" required class="mb-4 w-full rounded-lg border border-olive/20 px-4 py-2.5 text-olive-900 outline-none focus:border-olive" placeholder="you@example.com" />
+
+          <label class="mb-1 block text-sm font-medium text-olive-700">Пароль</label>
+          <input type="password" required class="mb-2 w-full rounded-lg border border-olive/20 px-4 py-2.5 text-olive-900 outline-none focus:border-olive" placeholder="••••••••" />
+
+          <p id="login-note" class="mb-2 hidden text-sm text-rose-600">
+            Кабінет ще підключається — повний робочий вхід зʼявиться тут найближчим часом.
+          </p>
+
+          <button type="submit" class="mt-4 w-full rounded-full bg-pink py-2.5 font-medium text-olive-900 shadow-soft hover:brightness-95">Увійти</button>
+        </form>
+
+        <p class="mt-6 text-center text-xs text-olive-300">
+          Немає облікового запису?
+          <a href="register.html" class="text-olive-500 underline hover:text-olive-700">Дізнатись, як отримати доступ</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+<script>
+  document.getElementById("login-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    document.getElementById("login-note").classList.remove("hidden");
+  });
+
+  function yearsSince(anchor, now) {
+    let years = now.getFullYear() - anchor.getFullYear();
+    const anniversaryPassed = now.getMonth() > anchor.getMonth() || (now.getMonth() === anchor.getMonth() && now.getDate() >= anchor.getDate());
+    if (!anniversaryPassed) years -= 1;
+    return Math.max(years, 0);
+  }
+  function pluralizeYearsUk(years) {
+    const m10 = years % 10, m100 = years % 100;
+    if (m100 >= 11 && m100 <= 14) return "років";
+    if (m10 === 1) return "рік";
+    if (m10 >= 2 && m10 <= 4) return "роки";
+    return "років";
+  }
+  const now = new Date();
+  const p = yearsSince(new Date("2021-07-09T00:00:00.000Z"), now);
+  const t = yearsSince(new Date("2025-07-09T00:00:00.000Z"), now);
+  document.getElementById("founder-experience").textContent =
+    `${p}+ ${pluralizeYearsUk(p)} активної практики | ${t}+ ${pluralizeYearsUk(t)} досвіду викладання`;
+</script>
+</body>
+</html>
