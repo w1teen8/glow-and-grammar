@@ -26,6 +26,6 @@ services:
       - key: TEACHER_EMAIL
         value: milena@glowandgrammar.com
       - key: TEACHER_PASSWORD
-        generateValue: true
+        value: changeme123
       - key: NODE_ENV
         value: production
