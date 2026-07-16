@@ -67,10 +67,6 @@
           <label class="mb-1 block text-sm font-medium text-olive-700">Пароль</label>
           <input type="password" required class="mb-2 w-full rounded-lg border border-olive/20 px-4 py-2.5 text-olive-900 outline-none focus:border-olive" placeholder="••••••••" />
 
-          <p id="login-note" class="mb-2 hidden text-sm text-rose-600">
-            Кабінет ще підключається — повний робочий вхід зʼявиться тут найближчим часом.
-          </p>
-
           <button type="submit" class="mt-4 w-full rounded-full bg-pink py-2.5 font-medium text-olive-900 shadow-soft hover:brightness-95">Увійти</button>
         </form>
 
@@ -85,7 +81,6 @@
 <script>
   document.getElementById("login-form").addEventListener("submit", function (e) {
     e.preventDefault();
-    document.getElementById("login-note").classList.remove("hidden");
   });
 
   function yearsSince(anchor, now) {
