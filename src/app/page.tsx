@@ -2,7 +2,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { experienceLabel } from "@/lib/experience";
 import { TARIFF_LABELS, type TariffPlan } from "@/types/models";
 import FeatureIcon from "@/components/FeatureIcon";
 
@@ -46,7 +45,6 @@ export default async function RootPage() {
   if (session?.user) redirect(session.user.isAdmin ? "/admin" : "/home");
 
   const founder = await prisma.teacherProfile.findFirst({ where: { isFounder: true } });
-  const experience = founder ? experienceLabel(new Date(founder.practicingSince)) : null;
 
   return (
     <div className="min-h-screen">
@@ -78,12 +76,7 @@ export default async function RootPage() {
         </div>
 
         <div className="relative mx-auto max-w-5xl">
-          {experience && (
-            <span className="inline-block rounded-full border border-cream/25 bg-cream/5 px-3 py-1 text-xs font-medium uppercase tracking-wide text-cream/80">
-              {experience}
-            </span>
-          )}
-          <h1 className="mt-6 max-w-2xl font-display text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
+          <h1 className="font-display text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
             Вільно говори англійською разом із Glow &amp; Grammar
           </h1>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-cream/80">

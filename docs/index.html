@@ -57,8 +57,7 @@
         <div class="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-cream/5 blur-3xl"></div>
       </div>
       <div class="relative mx-auto max-w-5xl">
-        <span id="experience-badge" class="inline-block rounded-full border border-cream/25 bg-cream/5 px-3 py-1 text-xs font-medium uppercase tracking-wide text-cream/80"></span>
-        <h1 class="mt-6 max-w-2xl font-display text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
+        <h1 class="font-display text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
           Вільно говори англійською разом із Glow &amp; Grammar
         </h1>
         <p class="mt-6 max-w-xl text-base leading-relaxed text-cream/80">
@@ -229,7 +228,6 @@
   const practiceLabel = `${practiceYears}+ ${pluralizeYearsUk(practiceYears)} активної практики`;
   const teachingLabel = `${teachingYears}+ ${pluralizeYearsUk(teachingYears)} досвіду викладання`;
 
-  document.getElementById("experience-badge").textContent = practiceLabel;
   document.getElementById("founder-experience").textContent = `${practiceLabel} | ${teachingLabel}`;
 </script>
 </body>
