@@ -8,7 +8,7 @@ services:
     name: glow-and-grammar
     runtime: node
     plan: free
-    buildCommand: npm install && npx prisma generate && npm run build
+    buildCommand: npm install --include=dev && npx prisma generate && npm run build
     # RENDER_EXTERNAL_URL is injected automatically by Render for every web
     # service — reused here as NEXTAUTH_URL so nothing has to be hardcoded.
     startCommand: >-
