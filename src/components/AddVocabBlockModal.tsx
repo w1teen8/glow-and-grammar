@@ -65,10 +65,10 @@ export default function AddVocabBlockModal({
   }
 
   return (
-    <div className="fixed inset-0 z-30 flex items-center justify-center bg-olive-900/30 px-4 py-8 backdrop-blur-sm">
+    <div className="fixed inset-0 z-30 flex animate-fade-in items-center justify-center bg-olive-900/30 px-4 py-8 backdrop-blur-sm">
       <form
         onSubmit={handleSubmit}
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl2 border border-olive/15 bg-cream p-6 shadow-card"
+        className="max-h-[90vh] w-full max-w-lg animate-scale-in overflow-y-auto rounded-xl2 border border-olive/15 bg-cream p-6 shadow-card"
       >
         <h2 className="mb-1 text-xl font-semibold tracking-tight text-olive-900">Нові слова</h2>
         <p className="mb-4 text-sm text-olive-400">

@@ -19,7 +19,7 @@ export default function TeacherCard({
   const experience = experienceLabel(new Date(teacher.practicingSince));
 
   return (
-    <div className="relative overflow-hidden rounded-xl2 border border-olive/10 bg-white/90 p-6 shadow-card hover:shadow-premium sm:p-8">
+    <div className="relative animate-fade-in-up overflow-hidden rounded-xl2 border border-olive/10 bg-white/90 p-6 shadow-card transition-shadow duration-300 hover:shadow-premium sm:p-8">
       <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-olive-500 to-pink-300" />
 
       {teacher.isFounder && (

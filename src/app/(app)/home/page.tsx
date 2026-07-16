@@ -40,17 +40,20 @@ export default function HomePage() {
       />
 
       <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
-        {SECTIONS.map((section) => (
+        {SECTIONS.map((section, i) => (
           <Link
             key={section.href}
             href={withStudent(section.href)}
-            className="group rounded-xl2 border border-olive/10 bg-white/70 p-6 shadow-soft hover:-translate-y-1 hover:border-olive/25 hover:bg-white hover:shadow-premium"
+            className="group animate-fade-in-up rounded-xl2 border border-olive/10 bg-white/70 p-6 shadow-soft transition-all duration-300 ease-out hover:-translate-y-1 hover:border-olive/25 hover:bg-white hover:shadow-premium"
+            style={{ animationDelay: `${i * 80}ms` }}
           >
             <h2 className="font-display text-lg font-semibold text-olive-800 group-hover:text-olive-900">
               {section.title}
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-olive-400">{section.description}</p>
-            <span className="mt-4 inline-block text-xs font-medium text-pink-700">Перейти →</span>
+            <span className="mt-4 inline-block text-xs font-medium text-pink-700 transition-transform duration-200 group-hover:translate-x-1">
+              Перейти →
+            </span>
           </Link>
         ))}
       </div>

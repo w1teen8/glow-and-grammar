@@ -40,6 +40,25 @@ const config: Config = {
       borderRadius: {
         xl2: "1.25rem",
       },
+      keyframes: {
+        fadeIn: {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        fadeInUp: {
+          from: { opacity: "0", transform: "translateY(18px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        scaleIn: {
+          from: { opacity: "0", transform: "scale(0.94) translateY(8px)" },
+          to: { opacity: "1", transform: "scale(1) translateY(0)" },
+        },
+      },
+      animation: {
+        "fade-in": "fadeIn 0.5s cubic-bezier(0.16,1,0.3,1) both",
+        "fade-in-up": "fadeInUp 0.7s cubic-bezier(0.16,1,0.3,1) both",
+        "scale-in": "scaleIn 0.25s cubic-bezier(0.16,1,0.3,1) both",
+      },
     },
   },
   plugins: [],

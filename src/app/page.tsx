@@ -48,7 +48,7 @@ export default async function RootPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-olive/10 px-4 py-5 sm:px-8">
+      <header className="animate-fade-in border-b border-olive/10 px-4 py-5 sm:px-8">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <p className="font-display text-lg font-semibold tracking-tight text-olive-900">Glow &amp; Grammar</p>
           <nav className="flex items-center gap-2">
@@ -71,28 +71,31 @@ export default async function RootPage() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-olive-700 via-olive-800 to-olive-900 px-4 py-20 text-cream sm:px-8 sm:py-28">
         <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-pink-300/15 blur-3xl" />
-          <div className="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-cream/5 blur-3xl" />
+          <div className="absolute -right-24 -top-24 h-96 w-96 animate-pulse rounded-full bg-pink-300/15 blur-3xl [animation-duration:6s]" />
+          <div className="absolute -left-24 bottom-0 h-80 w-80 animate-pulse rounded-full bg-cream/5 blur-3xl [animation-duration:8s]" />
         </div>
 
         <div className="relative mx-auto max-w-5xl">
-          <h1 className="font-display text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
+          <h1 className="animate-fade-in-up font-display text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
             Вільно говори англійською разом із Glow &amp; Grammar
           </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-cream/80">
+          <p
+            className="mt-6 max-w-xl animate-fade-in-up text-base leading-relaxed text-cream/80"
+            style={{ animationDelay: "120ms" }}
+          >
             Персональний цифровий кабінет для навчання: програма занять, домашні завдання, слова для
             вивчення та фінансовий баланс — в одному місці.
           </p>
-          <div className="mt-9 flex flex-wrap gap-3">
+          <div className="mt-9 flex flex-wrap animate-fade-in-up gap-3" style={{ animationDelay: "240ms" }}>
             <Link
               href="/register"
-              className="rounded-full bg-pink px-7 py-3 text-sm font-semibold text-olive-900 shadow-premium hover:-translate-y-0.5 hover:brightness-95"
+              className="rounded-full bg-pink px-7 py-3 text-sm font-semibold text-olive-900 shadow-premium transition-transform hover:-translate-y-0.5 hover:scale-[1.03] hover:brightness-95"
             >
               Записатись на урок
             </Link>
             <Link
               href="/login"
-              className="rounded-full border border-cream/40 px-7 py-3 text-sm font-medium text-cream hover:-translate-y-0.5 hover:bg-cream/10"
+              className="rounded-full border border-cream/40 px-7 py-3 text-sm font-medium text-cream transition-transform hover:-translate-y-0.5 hover:scale-[1.03] hover:bg-cream/10"
             >
               Увійти в кабінет
             </Link>
@@ -108,10 +111,11 @@ export default async function RootPage() {
             Оберіть, що підходить саме вам
           </h2>
           <div className="mt-9 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {Object.entries(TARIFF_LABELS).map(([key, label]) => (
+            {Object.entries(TARIFF_LABELS).map(([key, label], i) => (
               <div
                 key={key}
-                className="group relative flex flex-col overflow-hidden rounded-xl2 border border-olive/10 bg-white p-6 shadow-soft hover:-translate-y-1 hover:shadow-premium"
+                className="group relative flex animate-fade-in-up flex-col overflow-hidden rounded-xl2 border border-olive/10 bg-white p-6 shadow-soft transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-premium"
+                style={{ animationDelay: `${i * 90}ms` }}
               >
                 <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink to-pink-300" />
                 <h3 className="text-base font-semibold text-olive-800">{label}</h3>
@@ -120,7 +124,7 @@ export default async function RootPage() {
                 </p>
                 <Link
                   href="/register"
-                  className="mt-5 rounded-full bg-pink px-4 py-2 text-center text-xs font-semibold text-olive-900 shadow-soft group-hover:brightness-95"
+                  className="mt-5 rounded-full bg-pink px-4 py-2 text-center text-xs font-semibold text-olive-900 shadow-soft transition-transform group-hover:scale-[1.02] group-hover:brightness-95"
                 >
                   Дізнатись про доступ
                 </Link>
@@ -135,13 +139,14 @@ export default async function RootPage() {
       <section className="mx-auto max-w-5xl px-0 py-16 sm:px-0">
         <p className="text-xs font-medium uppercase tracking-[0.3em] text-olive-300">Що всередині кабінету</p>
         <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
-          {FEATURES.map((f) => (
+          {FEATURES.map((f, i) => (
             <div
               key={f.title}
-              className="relative flex flex-col items-center overflow-hidden rounded-xl2 border border-olive/10 bg-white/70 p-5 text-center shadow-soft hover:-translate-y-1 hover:bg-white hover:shadow-card"
+              className="group relative flex animate-fade-in-up flex-col items-center overflow-hidden rounded-xl2 border border-olive/10 bg-white/70 p-5 text-center shadow-soft transition-all duration-300 ease-out hover:-translate-y-1 hover:bg-white hover:shadow-card"
+              style={{ animationDelay: `${i * 90}ms` }}
             >
               <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink to-pink-300" />
-              <div className="mb-4 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-pink-50">
+              <div className="mb-4 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-pink-50 transition-transform duration-300 ease-out group-hover:scale-110">
                 <FeatureIcon name={f.icon} />
               </div>
               <h3 className="truncate text-base font-semibold text-olive-800" title={f.title}>
@@ -156,7 +161,7 @@ export default async function RootPage() {
       {/* Founder highlight */}
       {founder && (
         <section className="px-4 py-16 sm:px-8">
-          <div className="mx-auto max-w-5xl overflow-hidden rounded-xl2 border border-olive/10 bg-white p-8 shadow-card sm:p-10">
+          <div className="mx-auto max-w-5xl animate-fade-in-up overflow-hidden rounded-xl2 border border-olive/10 bg-white p-8 shadow-card transition-shadow duration-300 hover:shadow-premium sm:p-10">
             <div className="flex flex-col items-start gap-7 sm:flex-row sm:items-center">
               <div className="h-24 w-24 shrink-0 overflow-hidden rounded-full border-2 border-pink shadow-soft">
                 {founder.photoUrl ? (
