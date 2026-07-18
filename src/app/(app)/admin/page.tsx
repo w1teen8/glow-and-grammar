@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import PageHeading from "@/components/PageHeading";
+import Spinner from "@/components/Spinner";
+import EmptyState from "@/components/EmptyState";
+import FeatureIcon, { type FeatureIconName } from "@/components/FeatureIcon";
 import type { Student, TeacherProfile } from "@/types/models";
 
 export default function AdminPage() {
@@ -60,14 +63,30 @@ export default function AdminPage() {
         />
         <button
           onClick={() => setShowForm((v) => !v)}
-          className="rounded-full bg-pink px-5 py-2.5 text-sm font-medium text-olive-900 shadow-soft transition hover:brightness-95"
+          className="rounded-full bg-pink px-5 py-2.5 text-sm font-medium text-olive-900 shadow-soft transition hover:-translate-y-0.5 hover:shadow-card hover:brightness-95"
         >
           {showForm ? "Скасувати" : "+ Додати учня"}
         </button>
       </div>
 
+      {!loading && (
+        <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <StatCard icon="people" label="Учнів" value={students.length} delay={0} />
+          <StatCard icon="sparkle" label="Викладачів" value={teachers.length} delay={90} />
+          <StatCard
+            icon="chart"
+            label="Без викладача"
+            value={students.filter((s) => !s.teacherId).length}
+            delay={180}
+          />
+        </div>
+      )}
+
       {showForm && (
-        <form onSubmit={handleSubmit} className="mb-8 rounded-xl2 border border-olive/15 bg-white/70 p-6 shadow-soft">
+        <form
+          onSubmit={handleSubmit}
+          className="mb-8 animate-scale-in rounded-xl2 border border-olive/15 bg-white/70 p-6 shadow-soft"
+        >
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-olive-400">Ім&apos;я</label>
@@ -127,11 +146,9 @@ export default function AdminPage() {
       )}
 
       {loading ? (
-        <p className="text-olive-400">Завантаження…</p>
+        <Spinner label="Завантажуємо учнів…" />
       ) : students.length === 0 ? (
-        <div className="rounded-xl2 border border-dashed border-olive/25 bg-white/50 px-6 py-16 text-center text-olive-400">
-          Учнів ще немає.
-        </div>
+        <EmptyState message="Учнів ще немає." icon="people" />
       ) : (
         <div className="overflow-x-auto rounded-xl2 border border-olive/15 bg-white/70 shadow-soft">
           <table className="w-full min-w-[640px] text-left text-sm">
@@ -144,20 +161,40 @@ export default function AdminPage() {
               </tr>
             </thead>
             <tbody>
-              {students.map((s) => (
-                <tr key={s.id} className="border-b border-olive/10 last:border-0 hover:bg-olive/5">
-                  <td className="px-4 py-3 font-medium text-olive-700">{s.name}</td>
+              {students.map((s, i) => (
+                <tr
+                  key={s.id}
+                  className="animate-fade-in-left border-b border-olive/10 transition-colors last:border-0 hover:bg-olive/5"
+                  style={{ animationDelay: `${i * 50}ms` }}
+                >
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pink-50 text-xs font-semibold text-pink-700">
+                        {s.name.charAt(0).toUpperCase()}
+                      </span>
+                      <span className="font-medium text-olive-700">{s.name}</span>
+                    </div>
+                  </td>
                   <td className="px-4 py-3 text-olive-500">{s.email}</td>
                   <td className="px-4 py-3 text-olive-500">{teacherName(s.teacherId)}</td>
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap gap-3 text-xs">
-                      <Link href={`/syllabus?studentId=${s.id}`} className="text-pink-700 underline">
+                      <Link
+                        href={`/syllabus?studentId=${s.id}`}
+                        className="text-pink-700 underline decoration-pink-300 underline-offset-2 hover:text-pink-500"
+                      >
                         Syllabus
                       </Link>
-                      <Link href={`/homework?studentId=${s.id}`} className="text-pink-700 underline">
+                      <Link
+                        href={`/homework?studentId=${s.id}`}
+                        className="text-pink-700 underline decoration-pink-300 underline-offset-2 hover:text-pink-500"
+                      >
                         Homework
                       </Link>
-                      <Link href={`/payments?studentId=${s.id}`} className="text-pink-700 underline">
+                      <Link
+                        href={`/payments?studentId=${s.id}`}
+                        className="text-pink-700 underline decoration-pink-300 underline-offset-2 hover:text-pink-500"
+                      >
                         Payments
                       </Link>
                     </div>
@@ -168,6 +205,33 @@ export default function AdminPage() {
           </table>
         </div>
       )}
+    </div>
+  );
+}
+
+function StatCard({
+  icon,
+  label,
+  value,
+  delay,
+}: {
+  icon: FeatureIconName;
+  label: string;
+  value: number;
+  delay: number;
+}) {
+  return (
+    <div
+      className="group flex animate-fade-in-up items-center gap-4 rounded-xl2 border border-olive/10 bg-white/70 p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-card"
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-pink-50 transition-transform duration-300 group-hover:scale-110">
+        <FeatureIcon name={icon} className="h-6 w-6 text-pink-700" />
+      </div>
+      <div>
+        <p className="animate-count-up font-display text-2xl font-semibold text-olive-900">{value}</p>
+        <p className="text-xs uppercase tracking-wide text-olive-400">{label}</p>
+      </div>
     </div>
   );
 }

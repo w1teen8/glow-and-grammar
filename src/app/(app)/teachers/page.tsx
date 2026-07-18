@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import TeacherCard from "@/components/TeacherCard";
 import TeacherModal from "@/components/TeacherModal";
 import PageHeading from "@/components/PageHeading";
+import Spinner from "@/components/Spinner";
 import type { TeacherProfile } from "@/types/models";
 
 export default function TeachersPage() {
@@ -37,7 +38,7 @@ export default function TeachersPage() {
               setEditing(null);
               setModalOpen(true);
             }}
-            className="rounded-full bg-pink px-5 py-2.5 text-sm font-medium text-olive-900 shadow-soft transition hover:brightness-95"
+            className="rounded-full bg-pink px-5 py-2.5 text-sm font-medium text-olive-900 shadow-soft transition hover:-translate-y-0.5 hover:shadow-card hover:brightness-95"
           >
             + Додати викладача
           </button>
@@ -45,19 +46,20 @@ export default function TeachersPage() {
       </div>
 
       {loading ? (
-        <p className="text-olive-400">Завантаження…</p>
+        <Spinner />
       ) : (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {teachers.map((t) => (
-            <TeacherCard
-              key={t.id}
-              teacher={t}
-              isTeacher={isAdmin}
-              onEdit={() => {
-                setEditing(t);
-                setModalOpen(true);
-              }}
-            />
+          {teachers.map((t, i) => (
+            <div key={t.id} style={{ animationDelay: `${i * 90}ms` }} className="animate-fade-in-up">
+              <TeacherCard
+                teacher={t}
+                isTeacher={isAdmin}
+                onEdit={() => {
+                  setEditing(t);
+                  setModalOpen(true);
+                }}
+              />
+            </div>
           ))}
         </div>
       )}

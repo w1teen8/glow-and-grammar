@@ -6,6 +6,8 @@ import { useSearchParams } from "next/navigation";
 import PageHeading from "@/components/PageHeading";
 import AddVocabBlockModal from "@/components/AddVocabBlockModal";
 import VocabBlockCard from "@/components/VocabBlockCard";
+import Spinner from "@/components/Spinner";
+import EmptyState from "@/components/EmptyState";
 import type { Lesson } from "@/types/models";
 
 export default function VocabularyPage() {
@@ -37,7 +39,7 @@ export default function VocabularyPage() {
   }, [studentId, isTeacher]);
 
   if (isTeacher && !studentId) {
-    return <EmptyState message="Оберіть учня зверху, щоб побачити слова для вивчення." />;
+    return <EmptyState message="Оберіть учня зверху, щоб побачити слова для вивчення." icon="people" />;
   }
 
   const groups = lessons.filter((l) => l.vocabBlocks.length > 0);
@@ -57,7 +59,7 @@ export default function VocabularyPage() {
         {isTeacher && (
           <button
             onClick={() => setModalOpen(true)}
-            className="rounded-full bg-pink px-5 py-2.5 text-sm font-medium text-olive-900 shadow-soft transition hover:brightness-95"
+            className="rounded-full bg-pink px-5 py-2.5 text-sm font-medium text-olive-900 shadow-soft transition hover:-translate-y-0.5 hover:shadow-card hover:brightness-95"
           >
             + Додати слова
           </button>
@@ -65,15 +67,19 @@ export default function VocabularyPage() {
       </div>
 
       {loading ? (
-        <p className="mt-8 text-olive-400">Завантаження…</p>
+        <div className="mt-8">
+          <Spinner />
+        </div>
       ) : groups.length === 0 ? (
-        <EmptyState message="Слів для вивчення поки немає." />
+        <div className="mt-8">
+          <EmptyState message="Слів для вивчення поки немає." icon="book" />
+        </div>
       ) : (
         <>
-          <p className="mt-6 text-sm text-olive-400">Всього слів: {totalWords}</p>
+          <p className="mt-6 animate-fade-in text-sm text-olive-400">Всього слів: {totalWords}</p>
           <div className="mt-4 space-y-8">
-            {groups.map((lesson) => (
-              <div key={lesson.id}>
+            {groups.map((lesson, i) => (
+              <div key={lesson.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 70}ms` }}>
                 <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-olive-300">
                   Заняття {new Date(lesson.date).toLocaleDateString("uk-UA")}
                   {lesson.grammar && ` — ${lesson.grammar}`}
@@ -99,14 +105,6 @@ export default function VocabularyPage() {
           }}
         />
       )}
-    </div>
-  );
-}
-
-function EmptyState({ message }: { message: string }) {
-  return (
-    <div className="mt-8 rounded-xl2 border border-dashed border-olive/25 bg-white/50 px-6 py-16 text-center text-olive-400">
-      {message}
     </div>
   );
 }

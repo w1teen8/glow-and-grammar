@@ -71,11 +71,20 @@ export default async function RootPage() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-olive-700 via-olive-800 to-olive-900 px-4 py-20 text-cream sm:px-8 sm:py-28">
         <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="absolute -right-24 -top-24 h-96 w-96 animate-pulse rounded-full bg-pink-300/15 blur-3xl [animation-duration:6s]" />
-          <div className="absolute -left-24 bottom-0 h-80 w-80 animate-pulse rounded-full bg-cream/5 blur-3xl [animation-duration:8s]" />
+          <div className="absolute -right-24 -top-24 h-96 w-96 animate-float-slow rounded-full bg-pink-300/15 blur-3xl" />
+          <div className="absolute -left-24 bottom-0 h-80 w-80 animate-float-slow rounded-full bg-cream/5 blur-3xl [animation-delay:2s]" />
+          <div className="absolute left-1/3 top-1/2 h-64 w-64 animate-float rounded-full bg-olive-300/10 blur-3xl [animation-delay:1s]" />
         </div>
 
         <div className="relative mx-auto max-w-5xl">
+          <span
+            className="mb-5 inline-flex animate-fade-in-down items-center gap-1.5 rounded-full border border-cream/25 bg-cream/10 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-cream/80 backdrop-blur-sm"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5 animate-wiggle text-pink-300">
+              <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+            </svg>
+            Персональний цифровий кабінет
+          </span>
           <h1 className="animate-fade-in-up font-display text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
             Вільно говори англійською разом із Glow &amp; Grammar
           </h1>
@@ -136,17 +145,18 @@ export default async function RootPage() {
 
       {/* Feature grid — same container as the tariffs above, so both rows
           share the same left/right edges. */}
-      <section className="mx-auto max-w-5xl px-0 py-16 sm:px-0">
+      <section className="relative mx-auto max-w-5xl px-0 py-16 sm:px-0">
+        <div className="bg-orb -left-16 top-1/2 hidden h-56 w-56 -translate-y-1/2 animate-float-slow bg-olive-300/10 sm:block" aria-hidden />
         <p className="text-xs font-medium uppercase tracking-[0.3em] text-olive-300">Що всередині кабінету</p>
         <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
           {FEATURES.map((f, i) => (
             <div
               key={f.title}
-              className="group relative flex animate-fade-in-up flex-col items-center overflow-hidden rounded-xl2 border border-olive/10 bg-white/70 p-5 text-center shadow-soft transition-all duration-300 ease-out hover:-translate-y-1 hover:bg-white hover:shadow-card"
+              className="group relative flex animate-fade-in-up flex-col items-center overflow-hidden rounded-xl2 border border-olive/10 bg-white/70 p-5 text-center shadow-soft transition-all duration-300 ease-out hover:-translate-y-1.5 hover:bg-white hover:shadow-card"
               style={{ animationDelay: `${i * 90}ms` }}
             >
-              <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink to-pink-300" />
-              <div className="mb-4 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-pink-50 transition-transform duration-300 ease-out group-hover:scale-110">
+              <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink to-pink-300 bg-[length:200%_100%] transition-[background-position] duration-700 group-hover:animate-gradient-x" />
+              <div className="mb-4 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-pink-50 transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-110">
                 <FeatureIcon name={f.icon} />
               </div>
               <h3 className="truncate text-base font-semibold text-olive-800" title={f.title}>
@@ -161,17 +171,21 @@ export default async function RootPage() {
       {/* Founder highlight */}
       {founder && (
         <section className="px-4 py-16 sm:px-8">
-          <div className="mx-auto max-w-5xl animate-fade-in-up overflow-hidden rounded-xl2 border border-olive/10 bg-white p-8 shadow-card transition-shadow duration-300 hover:shadow-premium sm:p-10">
-            <div className="flex flex-col items-start gap-7 sm:flex-row sm:items-center">
-              <div className="h-24 w-24 shrink-0 overflow-hidden rounded-full border-2 border-pink shadow-soft">
-                {founder.photoUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={founder.photoUrl} alt={founder.name} className="h-full w-full object-cover" />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-olive-100 text-2xl font-semibold text-olive-500">
-                    {founder.name.charAt(0)}
-                  </div>
-                )}
+          <div className="group relative mx-auto max-w-5xl animate-fade-in-up overflow-hidden rounded-xl2 border border-olive/10 bg-white p-8 shadow-card transition-shadow duration-300 hover:shadow-premium sm:p-10">
+            <div className="bg-orb -right-16 -top-16 h-52 w-52 animate-float-slow bg-pink-300/15" aria-hidden />
+            <div className="relative flex flex-col items-start gap-7 sm:flex-row sm:items-center">
+              <div className="relative h-24 w-24 shrink-0">
+                <span className="absolute -inset-1.5 animate-pulse rounded-full bg-pink/20 [animation-duration:3s]" aria-hidden />
+                <div className="relative h-24 w-24 overflow-hidden rounded-full border-2 border-pink shadow-soft transition-transform duration-300 group-hover:scale-105">
+                  {founder.photoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={founder.photoUrl} alt={founder.name} className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-olive-100 text-2xl font-semibold text-olive-500">
+                      {founder.name.charAt(0)}
+                    </div>
+                  )}
+                </div>
               </div>
               <div>
                 <h2 className="font-display text-2xl font-semibold tracking-tight text-olive-900">
@@ -184,6 +198,31 @@ export default async function RootPage() {
           </div>
         </section>
       )}
+
+      {/* Closing CTA — gives the stretch between the founder card and the
+          footer some purpose instead of leaving it bare. */}
+      <section className="px-4 pb-20 sm:px-8">
+        <div className="relative mx-auto max-w-5xl animate-fade-in-up overflow-hidden rounded-xl2 bg-gradient-to-br from-olive-700 via-olive-800 to-olive-900 px-6 py-14 text-center text-cream shadow-premium sm:px-10">
+          <div className="pointer-events-none absolute inset-0" aria-hidden>
+            <div className="absolute -left-10 -top-10 h-48 w-48 animate-float rounded-full bg-pink-300/15 blur-3xl" />
+            <div className="absolute -right-10 -bottom-10 h-48 w-48 animate-float-slow rounded-full bg-cream/10 blur-3xl" />
+          </div>
+          <div className="relative">
+            <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
+              Готові розпочати шлях до вільної англійської?
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-cream/75">
+              Створіть акаунт — і перший урок можна буде запланувати вже сьогодні.
+            </p>
+            <Link
+              href="/register"
+              className="mt-7 inline-flex rounded-full bg-pink px-8 py-3 text-sm font-semibold text-olive-900 shadow-premium transition-transform hover:-translate-y-0.5 hover:scale-[1.03] hover:brightness-95"
+            >
+              Записатись на урок
+            </Link>
+          </div>
+        </div>
+      </section>
 
       <footer className="border-t border-olive/10 px-4 py-10 text-center text-olive-400 sm:px-8">
         <p className="text-base font-medium text-olive-600">© {new Date().getFullYear()} Glow &amp; Grammar</p>

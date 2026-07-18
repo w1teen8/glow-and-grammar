@@ -6,6 +6,8 @@ import { useSearchParams } from "next/navigation";
 import HomeworkBoard from "@/components/HomeworkBoard";
 import NewHomeworkModal from "@/components/NewHomeworkModal";
 import PageHeading from "@/components/PageHeading";
+import Spinner from "@/components/Spinner";
+import EmptyState from "@/components/EmptyState";
 import type { Homework } from "@/types/models";
 
 export default function HomeworkPage() {
@@ -37,7 +39,7 @@ export default function HomeworkPage() {
   }, [studentId, isTeacher]);
 
   if (isTeacher && !studentId) {
-    return <EmptyState message="Оберіть учня зверху, щоб побачити домашні завдання." />;
+    return <EmptyState message="Оберіть учня зверху, щоб побачити домашні завдання." icon="people" />;
   }
 
   return (
@@ -51,18 +53,14 @@ export default function HomeworkPage() {
         {isTeacher && (
           <button
             onClick={() => setModalOpen(true)}
-            className="rounded-full bg-pink px-5 py-2.5 text-sm font-medium text-olive-900 shadow-soft transition hover:brightness-95"
+            className="rounded-full bg-pink px-5 py-2.5 text-sm font-medium text-olive-900 shadow-soft transition hover:-translate-y-0.5 hover:shadow-card hover:brightness-95"
           >
             + Нове завдання
           </button>
         )}
       </div>
 
-      {loading ? (
-        <p className="text-olive-400">Завантаження…</p>
-      ) : (
-        <HomeworkBoard items={items} studentId={studentId} />
-      )}
+      {loading ? <Spinner /> : <HomeworkBoard items={items} studentId={studentId} />}
 
       {modalOpen && studentId && (
         <NewHomeworkModal
@@ -74,14 +72,6 @@ export default function HomeworkPage() {
           }}
         />
       )}
-    </div>
-  );
-}
-
-function EmptyState({ message }: { message: string }) {
-  return (
-    <div className="rounded-xl2 border border-dashed border-olive/25 bg-white/50 px-6 py-16 text-center text-olive-400">
-      {message}
     </div>
   );
 }

@@ -15,7 +15,7 @@ export default function HomeworkCard({
   return (
     <Link
       href={href}
-      className="block rounded-xl2 border border-olive/15 bg-white p-4 shadow-soft transition hover:shadow-card"
+      className="block rounded-xl2 border border-olive/15 bg-white p-4 shadow-soft transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-card"
     >
       <p className="mb-2 text-sm font-medium text-olive-700">{homework.title}</p>
       <p className={`mb-3 text-xs ${overdue ? "text-rose-600" : "text-olive-400"}`}>

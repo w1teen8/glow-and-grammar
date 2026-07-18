@@ -7,6 +7,8 @@ import PaymentTable from "@/components/PaymentTable";
 import PaymentModal from "@/components/PaymentModal";
 import PaymentCalendar from "@/components/PaymentCalendar";
 import PageHeading from "@/components/PageHeading";
+import Spinner from "@/components/Spinner";
+import EmptyState from "@/components/EmptyState";
 import type { PaymentEntry } from "@/types/models";
 
 export default function PaymentsPage() {
@@ -39,7 +41,7 @@ export default function PaymentsPage() {
   }, [studentId, isTeacher]);
 
   if (isTeacher && !studentId) {
-    return <EmptyState message="Оберіть учня зверху, щоб побачити оплати та відвідування." />;
+    return <EmptyState message="Оберіть учня зверху, щоб побачити оплати та відвідування." icon="people" />;
   }
 
   const paidCount = entries.filter((e) => e.paymentStatus === "PAID").length;
@@ -57,7 +59,7 @@ export default function PaymentsPage() {
               setEditing(null);
               setModalOpen(true);
             }}
-            className="rounded-full bg-pink px-5 py-2.5 text-sm font-medium text-olive-900 shadow-soft transition hover:brightness-95"
+            className="rounded-full bg-pink px-5 py-2.5 text-sm font-medium text-olive-900 shadow-soft transition hover:-translate-y-0.5 hover:shadow-card hover:brightness-95"
           >
             + Додати запис
           </button>
@@ -81,18 +83,18 @@ export default function PaymentsPage() {
 
       {!loading && entries.length > 0 && (
         <div className="mb-6 flex flex-wrap gap-4 text-sm">
-          <SummaryPill label="Записів" value={String(entries.length)} />
-          <SummaryPill label="Оплачено занять" value={String(paidCount)} />
-          {totalPaid > 0 && <SummaryPill label="Сума оплат" value={totalPaid.toFixed(0)} />}
+          <SummaryPill label="Записів" value={String(entries.length)} delay={0} />
+          <SummaryPill label="Оплачено занять" value={String(paidCount)} delay={70} />
+          {totalPaid > 0 && <SummaryPill label="Сума оплат" value={totalPaid.toFixed(0)} delay={140} />}
         </div>
       )}
 
       {loading ? (
-        <p className="text-olive-400">Завантаження…</p>
+        <Spinner />
       ) : entries.length === 0 ? (
-        <EmptyState message="Записів ще немає." />
+        <EmptyState message="Записів ще немає." icon="card" />
       ) : (
-        <div className="space-y-6">
+        <div className="animate-fade-in-up space-y-6">
           <PaymentCalendar entries={entries} />
           <PaymentTable
             entries={entries}
@@ -120,19 +122,14 @@ export default function PaymentsPage() {
   );
 }
 
-function SummaryPill({ label, value }: { label: string; value: string }) {
+function SummaryPill({ label, value, delay = 0 }: { label: string; value: string; delay?: number }) {
   return (
-    <div className="rounded-xl2 border border-olive/15 bg-white/70 px-4 py-2 shadow-soft">
+    <div
+      className="animate-scale-in rounded-xl2 border border-olive/15 bg-white/70 px-4 py-2 shadow-soft transition-shadow duration-300 hover:shadow-card"
+      style={{ animationDelay: `${delay}ms` }}
+    >
       <span className="text-olive-400">{label}: </span>
       <span className="font-medium text-olive-700">{value}</span>
-    </div>
-  );
-}
-
-function EmptyState({ message }: { message: string }) {
-  return (
-    <div className="rounded-xl2 border border-dashed border-olive/25 bg-white/50 px-6 py-16 text-center text-olive-400">
-      {message}
     </div>
   );
 }
