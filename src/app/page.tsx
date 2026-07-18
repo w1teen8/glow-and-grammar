@@ -225,10 +225,7 @@ export default async function RootPage() {
       </section>
 
       <footer className="border-t border-olive/10 px-4 py-10 text-center text-olive-400 sm:px-8">
-        <p className="text-base font-medium text-olive-600">
-          © {new Date().getFullYear()} Glow &amp; Grammar{" "}
-          <span className="text-olive-400">(Глоу Грамар, Глоу Граммар, Глоуграмар)</span>
-        </p>
+        <p className="text-base font-medium text-olive-600">© {new Date().getFullYear()} Glow &amp; Grammar</p>
         <p className="mt-2 text-base">
           Розробка сайту та адміністрування — Даніїл Заболотний ·{" "}
           <a href="tel:+380683054747" className="text-olive-500 underline hover:text-olive-700">
