@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://glow-and-grammar.onrender.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://glowgrammar.com";
 
 // Only the public, unauthenticated routes belong here — everything under
 // (app) requires a session and shouldn't be crawled or indexed.

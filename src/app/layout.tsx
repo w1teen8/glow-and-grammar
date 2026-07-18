@@ -16,15 +16,20 @@ const display = Literata({
   weight: ["500", "600", "700"],
 });
 
-// Falls back to the Render URL until a custom domain is attached — update
-// this (and NEXTAUTH_URL) together when that happens, so Open Graph URLs
-// and the sitemap keep pointing at the right place.
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://glow-and-grammar.onrender.com";
+// Custom domain is live as of the glowgrammar.com DNS cutover — keep this
+// (and NEXTAUTH_URL in Render's env vars) in sync if the domain ever changes.
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://glowgrammar.com";
 
 // The Cyrillic spellings exist purely so people searching in Russian/Ukrainian
-// by ear ("глоуграмар", "гло энд грамар") can still land on the right result —
-// they're real alternate names, not hidden keyword-stuffing.
-const ALT_NAMES = ["Глоу Грамар", "Глоуграмар", "Гло енд Грамар", "Glow and Grammar"];
+// by ear ("глоу грамар", "глоу граммар", "глоуграмар") can still land on the
+// right result — they're real alternate names, not hidden keyword-stuffing.
+const ALT_NAMES = [
+  "Глоу Грамар",
+  "Глоу Граммар",
+  "Глоуграмар",
+  "Гло енд Грамар",
+  "Glow and Grammar",
+];
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -33,7 +38,7 @@ export const metadata: Metadata = {
     template: "%s · Glow & Grammar",
   },
   description:
-    "Glow & Grammar, або «Глоу Грамар», — персональний цифровий кабінет школи англійської мови: програма занять, домашні завдання, слова для вивчення та фінансовий баланс в одному місці.",
+    "Glow & Grammar (пишуть також «Глоу Грамар», «Глоу Граммар», «Глоуграмар») — персональний цифровий кабінет школи англійської мови: програма занять, домашні завдання, слова для вивчення та фінансовий баланс в одному місці.",
   keywords: ["Glow & Grammar", ...ALT_NAMES, "школа англійської мови", "вивчення англійської онлайн"],
   openGraph: {
     title: "Glow & Grammar (Глоу Грамар)",
