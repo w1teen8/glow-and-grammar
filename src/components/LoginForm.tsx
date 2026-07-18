@@ -11,6 +11,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showForgot, setShowForgot] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -58,6 +59,20 @@ export default function LoginForm() {
           className="mb-2 w-full rounded-lg border border-olive/20 px-4 py-2.5 text-olive-900 outline-none transition focus:border-olive"
           placeholder="••••••••"
         />
+
+        <button
+          type="button"
+          onClick={() => setShowForgot((v) => !v)}
+          className="mb-2 text-xs font-medium text-olive-400 underline decoration-olive-300 underline-offset-2 hover:text-olive-600"
+        >
+          Забули пароль?
+        </button>
+
+        {showForgot && (
+          <p className="mb-3 animate-scale-in rounded-lg border border-pink/30 bg-pink-50 px-3 py-2.5 text-xs leading-relaxed text-olive-600">
+            Напишіть своєму викладачу — він видасть вам новий пароль для входу.
+          </p>
+        )}
 
         {error && <p className="mb-2 text-sm text-rose-600">{error}</p>}
 
