@@ -6,8 +6,10 @@ import PageHeading from "@/components/PageHeading";
 import Spinner from "@/components/Spinner";
 import EmptyState from "@/components/EmptyState";
 import FeatureIcon, { type FeatureIconName } from "@/components/FeatureIcon";
-import StudentCredentialsModal from "@/components/StudentCredentialsModal";
 import type { Student, TeacherProfile } from "@/types/models";
+
+// How long a revealed password stays on screen before hiding itself again.
+const REVEAL_MS = 20_000;
 
 export default function AdminPage() {
   const [students, setStudents] = useState<Student[]>([]);
@@ -18,7 +20,7 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resettingId, setResettingId] = useState<string | null>(null);
-  const [credentials, setCredentials] = useState<{ name: string; email: string; password: string } | null>(null);
+  const [revealed, setRevealed] = useState<{ id: string; password: string } | null>(null);
 
   async function load() {
     setLoading(true);
@@ -66,7 +68,13 @@ export default function AdminPage() {
       return;
     }
     const data = await res.json();
-    setCredentials({ name: student.name, email: data.email, password: data.password });
+    setRevealed({ id: student.id, password: data.password });
+    // Best-effort — clipboard access can be denied by the browser, the
+    // password is still shown on screen either way.
+    navigator.clipboard?.writeText(data.password).catch(() => {});
+    setTimeout(() => {
+      setRevealed((r) => (r?.id === student.id ? null : r));
+    }, REVEAL_MS);
   }
 
   return (
@@ -195,13 +203,22 @@ export default function AdminPage() {
                   <td className="px-4 py-3 text-olive-500">{s.email}</td>
                   <td className="px-4 py-3 text-olive-500">{teacherName(s.teacherId)}</td>
                   <td className="px-4 py-3">
-                    <button
-                      onClick={() => handleResetPassword(s)}
-                      disabled={resettingId === s.id}
-                      className="text-xs font-medium text-olive-500 underline decoration-olive-300 underline-offset-2 transition hover:text-olive-700 disabled:opacity-50"
-                    >
-                      {resettingId === s.id ? "Скидання…" : "Скинути пароль"}
-                    </button>
+                    {revealed?.id === s.id ? (
+                      <div className="flex animate-scale-in items-center gap-2">
+                        <span className="rounded-md border border-pink/30 bg-pink-50 px-2 py-1 font-mono text-xs font-semibold tracking-wide text-olive-900">
+                          {revealed.password}
+                        </span>
+                        <span className="text-xs text-olive-400">Скопійовано ✓</span>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleResetPassword(s)}
+                        disabled={resettingId === s.id}
+                        className="text-xs font-medium text-olive-500 underline decoration-olive-300 underline-offset-2 transition hover:text-olive-700 disabled:opacity-50"
+                      >
+                        {resettingId === s.id ? "Скидання…" : "Скинути пароль"}
+                      </button>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap gap-3 text-xs">
@@ -230,15 +247,6 @@ export default function AdminPage() {
             </tbody>
           </table>
         </div>
-      )}
-
-      {credentials && (
-        <StudentCredentialsModal
-          name={credentials.name}
-          email={credentials.email}
-          password={credentials.password}
-          onClose={() => setCredentials(null)}
-        />
       )}
     </div>
   );
