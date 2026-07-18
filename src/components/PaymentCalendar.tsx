@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { PaymentEntry } from "@/types/models";
 
 const ATTENDANCE_BG: Record<string, string> = {
+  SCHEDULED: "bg-sky-100 text-sky-800 border-sky-300",
   CONDUCTED: "bg-emerald-100 text-emerald-800 border-emerald-300",
   MISSED: "bg-rose-100 text-rose-800 border-rose-300",
   RESCHEDULED: "bg-amber-100 text-amber-800 border-amber-300",
@@ -104,6 +105,7 @@ export default function PaymentCalendar({ entries }: { entries: PaymentEntry[] }
       </div>
 
       <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-olive-400">
+        <Legend swatch="border border-sky-300 bg-sky-100" label="Заплановано" />
         <Legend swatch="border border-emerald-300 bg-emerald-100" label="Проведено" />
         <Legend swatch="border border-rose-300 bg-rose-100" label="Пропущено" />
         <Legend swatch="border border-amber-300 bg-amber-100" label="Перенесено" />

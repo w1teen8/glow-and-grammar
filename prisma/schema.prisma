@@ -13,7 +13,7 @@ datasource db {
 //   role:             "TEACHER" | "STUDENT"
 //   Lesson.status:    "IN_PROGRESS" | "MASTERED" | "REVIEW_NEEDED"
 //   Homework.status:  "TODO" | "IN_PROGRESS" | "CHECKING" | "DONE"
-//   attendanceStatus: "CONDUCTED" | "MISSED" | "RESCHEDULED"
+//   attendanceStatus: "SCHEDULED" | "CONDUCTED" | "MISSED" | "RESCHEDULED"
 //   tariffPlan:       "INDIVIDUAL_60" | "INDIVIDUAL_45" | "PAIR_60" | "PAIR_45"
 //   paymentStatus:    "PAID" | "UNPAID"
 

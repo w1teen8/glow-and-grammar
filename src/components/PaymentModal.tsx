@@ -82,6 +82,7 @@ export default function PaymentModal({
           onChange={(e) => set("attendanceStatus", e.target.value as AttendanceStatus)}
           className="mb-3 w-full rounded-lg border border-olive/20 px-3 py-2 outline-none focus:border-olive"
         >
+          <option value="SCHEDULED">Заплановано</option>
           <option value="CONDUCTED">Проведено</option>
           <option value="MISSED">Пропущено (списання 100%)</option>
           <option value="RESCHEDULED">Перенесено (безкоштовно)</option>

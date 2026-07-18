@@ -1,7 +1,7 @@
 export type Role = "TEACHER" | "STUDENT";
 export type LessonStatus = "IN_PROGRESS" | "MASTERED" | "REVIEW_NEEDED";
 export type HomeworkStatus = "TODO" | "IN_PROGRESS" | "CHECKING" | "DONE";
-export type AttendanceStatus = "CONDUCTED" | "MISSED" | "RESCHEDULED";
+export type AttendanceStatus = "SCHEDULED" | "CONDUCTED" | "MISSED" | "RESCHEDULED";
 export type TariffPlan = "INDIVIDUAL_60" | "INDIVIDUAL_45" | "PAIR_60" | "PAIR_45";
 export type PaymentStatus = "PAID" | "UNPAID";
 

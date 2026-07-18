@@ -13,6 +13,7 @@ const MAPS: Record<BadgeKind, Record<string, { label: string; className: string 
     DONE: { label: "Done", className: "bg-emerald-100 text-emerald-800 border-emerald-200" },
   },
   attendance: {
+    SCHEDULED: { label: "Заплановано", className: "bg-sky-100 text-sky-800 border-sky-200" },
     CONDUCTED: { label: "Проведено", className: "bg-emerald-100 text-emerald-800 border-emerald-200" },
     MISSED: { label: "Пропущено (списання 100%)", className: "bg-rose-100 text-rose-800 border-rose-200" },
     RESCHEDULED: { label: "Перенесено (безкоштовно)", className: "bg-amber-100 text-amber-800 border-amber-200" },
