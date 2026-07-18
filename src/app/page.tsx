@@ -229,7 +229,21 @@ export default async function RootPage() {
           © {new Date().getFullYear()} Glow &amp; Grammar{" "}
           <span className="text-olive-400">(Глоу Грамар, Глоу Граммар, Глоуграмар)</span>
         </p>
-        <p className="mt-2 text-base">Розробка сайту та адміністрування — Даніїл Заболотний</p>
+        <p className="mt-2 text-base">
+          Розробка сайту та адміністрування — Даніїл Заболотний ·{" "}
+          <a href="tel:+380683054747" className="text-olive-500 underline hover:text-olive-700">
+            +380 68 305 47 47
+          </a>{" "}
+          ·{" "}
+          <a
+            href="https://t.me/w1teen0"
+            target="_blank"
+            rel="noreferrer"
+            className="text-olive-500 underline hover:text-olive-700"
+          >
+            Telegram @w1teen0
+          </a>
+        </p>
       </footer>
     </div>
   );
