@@ -6,6 +6,7 @@ import PageHeading from "@/components/PageHeading";
 import Spinner from "@/components/Spinner";
 import EmptyState from "@/components/EmptyState";
 import FeatureIcon, { type FeatureIconName } from "@/components/FeatureIcon";
+import StudentCredentialsModal from "@/components/StudentCredentialsModal";
 import type { Student, TeacherProfile } from "@/types/models";
 
 export default function AdminPage() {
@@ -16,6 +17,8 @@ export default function AdminPage() {
   const [form, setForm] = useState({ name: "", email: "", password: "", teacherId: "" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resettingId, setResettingId] = useState<string | null>(null);
+  const [credentials, setCredentials] = useState<{ name: string; email: string; password: string } | null>(null);
 
   async function load() {
     setLoading(true);
@@ -51,6 +54,19 @@ export default function AdminPage() {
 
   function teacherName(teacherId?: string | null) {
     return teachers.find((t) => t.id === teacherId)?.name ?? "—";
+  }
+
+  async function handleResetPassword(student: Student) {
+    if (!confirm(`Скинути пароль для ${student.name}? Старий пароль одразу перестане працювати.`)) return;
+    setResettingId(student.id);
+    const res = await fetch(`/api/students/${student.id}/reset-password`, { method: "POST" });
+    setResettingId(null);
+    if (!res.ok) {
+      alert("Не вдалося скинути пароль.");
+      return;
+    }
+    const data = await res.json();
+    setCredentials({ name: student.name, email: data.email, password: data.password });
   }
 
   return (
@@ -157,6 +173,7 @@ export default function AdminPage() {
                 <th className="px-4 py-3">Ім&apos;я</th>
                 <th className="px-4 py-3">Email</th>
                 <th className="px-4 py-3">Викладач</th>
+                <th className="px-4 py-3">Логін і пароль</th>
                 <th className="px-4 py-3">Перейти до</th>
               </tr>
             </thead>
@@ -177,6 +194,15 @@ export default function AdminPage() {
                   </td>
                   <td className="px-4 py-3 text-olive-500">{s.email}</td>
                   <td className="px-4 py-3 text-olive-500">{teacherName(s.teacherId)}</td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => handleResetPassword(s)}
+                      disabled={resettingId === s.id}
+                      className="text-xs font-medium text-olive-500 underline decoration-olive-300 underline-offset-2 transition hover:text-olive-700 disabled:opacity-50"
+                    >
+                      {resettingId === s.id ? "Скидання…" : "Скинути пароль"}
+                    </button>
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap gap-3 text-xs">
                       <Link
@@ -204,6 +230,15 @@ export default function AdminPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {credentials && (
+        <StudentCredentialsModal
+          name={credentials.name}
+          email={credentials.email}
+          password={credentials.password}
+          onClose={() => setCredentials(null)}
+        />
       )}
     </div>
   );
