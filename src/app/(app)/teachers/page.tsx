@@ -16,6 +16,7 @@ export default function TeachersPage() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<TeacherProfile | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -27,6 +28,20 @@ export default function TeachersPage() {
   useEffect(() => {
     load();
   }, []);
+
+  async function handleDeleteTeacher(teacher: TeacherProfile) {
+    if (!confirm(`Видалити викладача ${teacher.name}? Цю дію не можна скасувати.`)) return;
+    setDeletingId(teacher.id);
+    const res = await fetch(`/api/teachers/${teacher.id}`, { method: "DELETE" });
+    setDeletingId(null);
+    if (!res.ok) {
+      alert(
+        "Не вдалося видалити викладача. Можливо, у нього є акаунт для входу або призначені учні — спершу відв'яжіть їх."
+      );
+      return;
+    }
+    load();
+  }
 
   return (
     <div>
@@ -58,6 +73,8 @@ export default function TeachersPage() {
                   setEditing(t);
                   setModalOpen(true);
                 }}
+                onDelete={() => handleDeleteTeacher(t)}
+                deleting={deletingId === t.id}
               />
             </div>
           ))}

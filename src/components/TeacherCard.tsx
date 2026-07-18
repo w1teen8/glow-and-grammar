@@ -7,10 +7,14 @@ export default function TeacherCard({
   teacher,
   isTeacher,
   onEdit,
+  onDelete,
+  deleting,
 }: {
   teacher: TeacherProfile;
   isTeacher: boolean;
   onEdit?: () => void;
+  onDelete?: () => void;
+  deleting?: boolean;
 }) {
   const credentials = teacher.credentials.split("\n").map((s) => s.trim()).filter(Boolean);
   const philosophy = teacher.philosophy.split("\n").map((s) => s.trim()).filter(Boolean);
@@ -98,10 +102,23 @@ export default function TeacherCard({
         ) : (
           <span />
         )}
-        {isTeacher && onEdit && (
-          <button onClick={onEdit} className="text-xs text-olive-400 underline hover:text-olive-600">
-            Редагувати
-          </button>
+        {isTeacher && (onEdit || onDelete) && (
+          <div className="flex items-center gap-4">
+            {onEdit && (
+              <button onClick={onEdit} className="text-xs text-olive-400 underline hover:text-olive-600">
+                Редагувати
+              </button>
+            )}
+            {onDelete && (
+              <button
+                onClick={onDelete}
+                disabled={deleting}
+                className="text-xs text-rose-500 underline decoration-rose-300 hover:text-rose-700 disabled:opacity-50"
+              >
+                {deleting ? "Видалення…" : "Видалити"}
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>

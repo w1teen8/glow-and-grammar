@@ -21,6 +21,7 @@ export default function AdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [resettingId, setResettingId] = useState<string | null>(null);
   const [revealed, setRevealed] = useState<{ id: string; password: string } | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -75,6 +76,23 @@ export default function AdminPage() {
     setTimeout(() => {
       setRevealed((r) => (r?.id === student.id ? null : r));
     }, REVEAL_MS);
+  }
+
+  async function handleDeleteStudent(student: Student) {
+    if (
+      !confirm(
+        `Видалити учня ${student.name}? Це також видалить усі його заняття, домашні завдання та записи про оплати. Дію не можна скасувати.`
+      )
+    )
+      return;
+    setDeletingId(student.id);
+    const res = await fetch(`/api/students/${student.id}`, { method: "DELETE" });
+    setDeletingId(null);
+    if (!res.ok) {
+      alert("Не вдалося видалити учня.");
+      return;
+    }
+    load();
   }
 
   return (
@@ -183,6 +201,7 @@ export default function AdminPage() {
                 <th className="px-4 py-3">Викладач</th>
                 <th className="px-4 py-3">Логін і пароль</th>
                 <th className="px-4 py-3">Перейти до</th>
+                <th className="px-4 py-3" />
               </tr>
             </thead>
             <tbody>
@@ -241,6 +260,15 @@ export default function AdminPage() {
                         Payments
                       </Link>
                     </div>
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      onClick={() => handleDeleteStudent(s)}
+                      disabled={deletingId === s.id}
+                      className="text-xs font-medium text-rose-500 underline decoration-rose-300 underline-offset-2 transition hover:text-rose-700 disabled:opacity-50"
+                    >
+                      {deletingId === s.id ? "Видалення…" : "Видалити"}
+                    </button>
                   </td>
                 </tr>
               ))}
