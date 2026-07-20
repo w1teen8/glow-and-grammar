@@ -20,6 +20,13 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (session.user.role === "TEACHER") {
       await assertCanManageStudent(session, block.lesson.studentId);
       const { dueDate, learned } = body;
+
+      // Toggling the whole block also marks every individual word to match —
+      // they'd otherwise silently disagree with the block-level badge.
+      if (learned !== undefined) {
+        await prisma.vocabItem.updateMany({ where: { blockId: params.id }, data: { learned } });
+      }
+
       const updated = await prisma.vocabBlock.update({
         where: { id: params.id },
         data: {
@@ -33,6 +40,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
     if (block.lesson.studentId !== session.user.id) return jsonError("Forbidden", 403);
     if (body.learned === undefined) return jsonError("Students can only update the learned status");
+
+    await prisma.vocabItem.updateMany({ where: { blockId: params.id }, data: { learned: body.learned } });
 
     const updated = await prisma.vocabBlock.update({
       where: { id: params.id },
