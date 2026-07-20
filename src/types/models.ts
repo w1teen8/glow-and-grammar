@@ -37,6 +37,8 @@ export type Lesson = {
   writing: string;
   status: LessonStatus;
   lessonLink: string | null;
+  attachmentUrl: string | null;
+  attachmentName: string | null;
   homework: HomeworkSummary[];
   vocabBlocks: VocabBlock[];
 };

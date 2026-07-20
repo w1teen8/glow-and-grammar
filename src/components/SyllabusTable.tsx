@@ -51,18 +51,29 @@ export default function SyllabusTable({
                   <StatusBadge kind="lesson" value={lesson.status} />
                 </td>
                 <td className="px-4 py-3">
-                  {lesson.lessonLink ? (
-                    <a
-                      href={lesson.lessonLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-pink-700 underline decoration-pink-300 underline-offset-2"
-                    >
-                      Відкрити
-                    </a>
-                  ) : (
-                    <span className="text-olive-300">—</span>
-                  )}
+                  <div className="flex flex-col gap-1">
+                    {lesson.lessonLink && (
+                      <a
+                        href={lesson.lessonLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-pink-700 underline decoration-pink-300 underline-offset-2"
+                      >
+                        Відкрити
+                      </a>
+                    )}
+                    {lesson.attachmentUrl && (
+                      <a
+                        href={lesson.attachmentUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="truncate text-pink-700 underline decoration-pink-300 underline-offset-2"
+                      >
+                        {lesson.attachmentName ?? "Файл"}
+                      </a>
+                    )}
+                    {!lesson.lessonLink && !lesson.attachmentUrl && <span className="text-olive-300">—</span>}
+                  </div>
                 </td>
                 <td className="px-4 py-3">
                   {lesson.homework[0] ? (
@@ -109,6 +120,11 @@ export default function SyllabusTable({
               {lesson.lessonLink && (
                 <a href={lesson.lessonLink} target="_blank" rel="noreferrer" className="text-xs text-pink-700 underline">
                   Матеріал заняття
+                </a>
+              )}
+              {lesson.attachmentUrl && (
+                <a href={lesson.attachmentUrl} target="_blank" rel="noreferrer" className="text-xs text-pink-700 underline">
+                  {lesson.attachmentName ?? "Файл"}
                 </a>
               )}
               {lesson.homework[0] && (

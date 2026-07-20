@@ -25,6 +25,11 @@ export default function LessonModal({
     lessonLink: lesson?.lessonLink ?? "",
   });
   const [saving, setSaving] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [attachment, setAttachment] = useState(
+    lesson?.attachmentUrl ? { url: lesson.attachmentUrl, name: lesson.attachmentName } : null
+  );
+  const [removingAttachment, setRemovingAttachment] = useState(false);
 
   function set<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -35,13 +40,34 @@ export default function LessonModal({
     setSaving(true);
     const url = lesson ? `/api/lessons/${lesson.id}` : "/api/lessons";
     const method = lesson ? "PATCH" : "POST";
-    await fetch(url, {
+    const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...form, studentId }),
     });
+
+    if (file && res.ok) {
+      const saved = await res.json();
+      const uploadData = new FormData();
+      uploadData.append("file", file);
+      await fetch(`/api/lessons/${saved.id}/attachment`, { method: "POST", body: uploadData });
+    }
+
     setSaving(false);
     onSaved();
+  }
+
+  async function handleRemoveAttachment() {
+    if (!lesson) {
+      setFile(null);
+      setAttachment(null);
+      return;
+    }
+    setRemovingAttachment(true);
+    await fetch(`/api/lessons/${lesson.id}/attachment`, { method: "DELETE" });
+    setRemovingAttachment(false);
+    setAttachment(null);
+    setFile(null);
   }
 
   return (
@@ -120,8 +146,43 @@ export default function LessonModal({
           value={form.lessonLink}
           onChange={(e) => set("lessonLink", e.target.value)}
           placeholder="https://"
-          className="mb-5 w-full rounded-lg border border-olive/20 px-3 py-2 outline-none focus:border-olive"
+          className="mb-3 w-full rounded-lg border border-olive/20 px-3 py-2 outline-none focus:border-olive"
         />
+
+        <Label>Файл до заняття (PDF, зображення тощо)</Label>
+        {attachment && !file ? (
+          <div className="mb-5 flex items-center justify-between gap-3 rounded-lg border border-olive/20 bg-white px-3 py-2 text-sm">
+            <a
+              href={attachment.url}
+              target="_blank"
+              rel="noreferrer"
+              className="truncate text-pink-700 underline decoration-pink-300"
+            >
+              {attachment.name ?? "Відкрити файл"}
+            </a>
+            <button
+              type="button"
+              onClick={handleRemoveAttachment}
+              disabled={removingAttachment}
+              className="shrink-0 text-xs text-rose-500 underline decoration-rose-300 hover:text-rose-700 disabled:opacity-50"
+            >
+              {removingAttachment ? "Видалення…" : "Видалити"}
+            </button>
+          </div>
+        ) : (
+          <div className="mb-5">
+            <input
+              type="file"
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              className="w-full rounded-lg border border-olive/20 bg-white px-3 py-2 text-sm outline-none focus:border-olive"
+            />
+            {file && (
+              <p className="mt-1 text-xs text-olive-400">
+                Буде завантажено разом зі збереженням: {file.name}
+              </p>
+            )}
+          </div>
+        )}
 
         <div className="flex justify-end gap-3">
           <button

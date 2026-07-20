@@ -86,6 +86,10 @@ model Lesson {
   writing          String
   status           String   @default("IN_PROGRESS")
   lessonLink       String?
+  // An uploaded file attached to this lesson (e.g. a worksheet PDF) —
+  // separate from lessonLink, which is an external URL (Canva/Drive/etc.).
+  attachmentUrl    String?
+  attachmentName   String?
   homework         Homework[]
   // Words assigned during this lesson, grouped into dated blocks (e.g. "learn
   // by 20.07") — separate from the per-homework "Words to learn" block.
