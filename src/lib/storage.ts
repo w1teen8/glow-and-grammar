@@ -61,7 +61,9 @@ export async function getPresignedUploadUrl(
   const uploadUrl = await getSignedUrl(
     client,
     new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: contentType }),
-    { expiresIn: 300 }
+    // An hour, not a few minutes — large lesson recordings can take a while
+    // to upload on a slow connection, and the URL must still be valid then.
+    { expiresIn: 3600 }
   );
 
   return { uploadUrl, publicUrl: `${publicBase.replace(/\/$/, "")}/${key}` };

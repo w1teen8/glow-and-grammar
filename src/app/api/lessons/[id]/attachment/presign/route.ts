@@ -5,7 +5,11 @@ import { requireAdmin } from "@/lib/auth";
 import { handleApiError, jsonError } from "@/lib/api-helpers";
 import { getPresignedUploadUrl } from "@/lib/storage";
 
-const MAX_SIZE_BYTES = 20 * 1024 * 1024;
+// Lesson attachments include recorded video (e.g. a Zoom MP4), not just
+// worksheets — 20MB was fine for PDFs but far too small for that. R2's free
+// tier is 10GB total storage, so a handful of large recordings will still
+// eat into it; overage beyond that is billed at $0.015/GB-month.
+const MAX_SIZE_BYTES = 2 * 1024 * 1024 * 1024;
 
 // Step 1 of the direct-to-R2 upload flow: the browser asks us for a signed
 // URL, then PUTs the file bytes straight to R2 itself — our server never
@@ -19,7 +23,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     const { filename, contentType, size } = await req.json();
     if (!filename || !contentType) return jsonError("filename and contentType are required");
-    if (typeof size === "number" && size > MAX_SIZE_BYTES) return jsonError("File is too large (max 20MB)");
+    if (typeof size === "number" && size > MAX_SIZE_BYTES) return jsonError("File is too large (max 2GB)");
 
     const ext = path.extname(filename) || "";
     const key = `lessons/${lesson.id}-${Date.now()}${ext}`;
