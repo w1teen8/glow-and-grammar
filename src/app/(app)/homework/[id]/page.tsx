@@ -178,7 +178,10 @@ export default function HomeworkDetailPage() {
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <h2 className="font-sans text-lg font-bold uppercase tracking-tight text-olive-800">Words to learn</h2>
             <Link
-              href={studentId ? `/vocabulary?studentId=${studentId}` : "/vocabulary"}
+              href={`/vocabulary?${new URLSearchParams({
+                ...(studentId ? { studentId } : {}),
+                homeworkId: homework.id,
+              }).toString()}`}
               className="text-xs font-medium text-pink-700 underline decoration-pink-300 underline-offset-2 hover:text-pink-500"
             >
               Перейти до слів →
