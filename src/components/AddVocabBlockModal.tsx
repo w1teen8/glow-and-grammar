@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { Lesson } from "@/types/models";
+
+const DRAG_MIME = "application/x-vocab-word";
 
 function addDays(isoDate: string, days: number) {
   const d = new Date(isoDate);
@@ -23,6 +25,51 @@ export default function AddVocabBlockModal({
   const [rows, setRows] = useState([{ english: "", translation: "" }]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+
+  // Every word the student already has, across all lessons — deduplicated by
+  // English spelling so the same word doesn't show up over and over just
+  // because it was assigned in several blocks.
+  const existingWords = useMemo(() => {
+    const seen = new Set<string>();
+    const words: { english: string; translation: string }[] = [];
+    for (const lesson of lessons) {
+      for (const block of lesson.vocabBlocks) {
+        for (const item of block.vocabItems) {
+          const key = item.english.trim().toLowerCase();
+          if (key && !seen.has(key)) {
+            seen.add(key);
+            words.push({ english: item.english, translation: item.translation });
+          }
+        }
+      }
+    }
+    return words;
+  }, [lessons]);
+
+  function addWord(word: { english: string; translation: string }) {
+    setRows((r) => {
+      // Drop it into the first empty row instead of always appending, so
+      // dragging into a fresh block doesn't leave a blank row above it.
+      const emptyIndex = r.findIndex((row) => !row.english.trim() && !row.translation.trim());
+      if (emptyIndex !== -1) {
+        return r.map((row, i) => (i === emptyIndex ? word : row));
+      }
+      return [...r, word];
+    });
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault();
+    setDragOver(false);
+    const data = e.dataTransfer.getData(DRAG_MIME);
+    if (!data) return;
+    try {
+      addWord(JSON.parse(data));
+    } catch {
+      // Ignore malformed drag payloads.
+    }
+  }
 
   function handleLessonChange(id: string) {
     setLessonId(id);
@@ -101,8 +148,40 @@ export default function AddVocabBlockModal({
           className="mb-4 w-full rounded-lg border border-olive/20 px-3 py-2 outline-none focus:border-olive"
         />
 
+        {existingWords.length > 0 && (
+          <div className="mb-4">
+            <label className="mb-2 block text-xs font-medium uppercase tracking-wide text-olive-400">
+              Наявні слова — перетягніть у список нижче
+            </label>
+            <div className="flex max-h-28 flex-wrap gap-1.5 overflow-y-auto rounded-lg border border-dashed border-olive/25 bg-white/50 p-2">
+              {existingWords.map((word) => (
+                <span
+                  key={word.english}
+                  draggable
+                  onDragStart={(e) => e.dataTransfer.setData(DRAG_MIME, JSON.stringify(word))}
+                  onClick={() => addWord(word)}
+                  title="Перетягніть або натисніть, щоб додати"
+                  className="cursor-grab select-none rounded-full border border-olive/20 bg-cream px-3 py-1 text-xs text-olive-600 transition hover:border-pink hover:bg-pink-50 active:cursor-grabbing"
+                >
+                  {word.english}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         <label className="mb-2 block text-xs font-medium uppercase tracking-wide text-olive-400">Слова</label>
-        <div className="mb-3 space-y-2">
+        <div
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={handleDrop}
+          className={`mb-3 space-y-2 rounded-lg p-1.5 transition-colors ${
+            dragOver ? "bg-pink-50 ring-2 ring-pink/40" : ""
+          }`}
+        >
           {rows.map((row, i) => (
             <div key={i} className="flex gap-2">
               <input
