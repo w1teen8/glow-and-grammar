@@ -64,11 +64,14 @@ export default function AudioRecorder({
       formData.append("file", blob, "recording.webm");
       formData.append("kind", kind);
       const res = await fetch(`/api/homework/${homeworkId}/audio`, { method: "POST", body: formData });
-      if (!res.ok) throw new Error("upload failed");
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error ?? "upload failed");
+      }
       setBlobUrl(null);
       onUploaded();
-    } catch {
-      setError("Не вдалося завантажити запис. Спробуйте ще раз.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Не вдалося завантажити запис. Спробуйте ще раз.");
     } finally {
       setUploading(false);
     }

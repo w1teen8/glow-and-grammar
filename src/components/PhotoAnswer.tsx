@@ -26,11 +26,14 @@ export default function PhotoAnswer({
         const formData = new FormData();
         formData.append("file", file);
         const res = await fetch(`/api/homework/${homeworkId}/photos`, { method: "POST", body: formData });
-        if (!res.ok) throw new Error("upload failed");
+        if (!res.ok) {
+          const data = await res.json().catch(() => null);
+          throw new Error(data?.error ?? "upload failed");
+        }
       }
       onChanged();
-    } catch {
-      setError("Не вдалося завантажити одне з фото. Спробуйте ще раз.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Не вдалося завантажити одне з фото. Спробуйте ще раз.");
     } finally {
       setUploading(false);
     }

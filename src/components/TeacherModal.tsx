@@ -61,8 +61,9 @@ export default function TeacherModal({
       photoData.append("file", photoFile);
       const photoRes = await fetch(`/api/teachers/${saved.id}/photo`, { method: "POST", body: photoData });
       if (!photoRes.ok) {
+        const data = await photoRes.json().catch(() => null);
         setSaving(false);
-        setError("Профіль збережено, але фото завантажити не вдалося. Спробуйте ще раз нижче.");
+        setError(`Профіль збережено, але фото завантажити не вдалося: ${data?.error ?? "невідома помилка"}`);
         return;
       }
     }

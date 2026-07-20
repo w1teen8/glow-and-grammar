@@ -12,6 +12,9 @@ export async function handleApiError(fn: () => Promise<NextResponse>) {
       return jsonError(err.status === 401 ? "Unauthorized" : "Forbidden", err.status);
     }
     console.error(err);
-    return jsonError("Internal server error", 500);
+    // Surfaced to the client so upload/save failures are diagnosable from
+    // the UI itself, not only from server logs.
+    const detail = err instanceof Error ? err.message : String(err);
+    return jsonError(`Internal server error: ${detail}`, 500);
   }
 }
