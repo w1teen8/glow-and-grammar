@@ -59,71 +59,8 @@ async function main() {
     },
   });
 
-  const demoPasswordHash = await bcrypt.hash("student123", 10);
-  await prisma.user.upsert({
-    where: { email: "student@example.com" },
-    update: {},
-    create: {
-      email: "student@example.com",
-      passwordHash: demoPasswordHash,
-      name: "Демо Учень",
-      role: "STUDENT",
-      teacherId: teacherProfile.id,
-    },
-  });
-
-  // A second, non-founder teacher — demonstrates the scoped permission model:
-  // this account can only manage homework for students assigned to them.
-  const assistantBio =
-    "Софія веде розмовну практику та перевіряє домашні завдання для окремої групи учнів Glow & Grammar.";
-
-  const assistantProfile = await prisma.teacherProfile.upsert({
-    where: { id: "assistant-demo" },
-    update: { bio: assistantBio },
-    create: {
-      id: "assistant-demo",
-      name: "Софія",
-      title: "Викладачка розмовної практики",
-      bio: assistantBio,
-      credentials: "Сертифікат TEFL.\nДосвід викладання розмовної англійської для підлітків.",
-      philosophy: "Регулярна практика говоріння в невимушеній, доброзичливій атмосфері.",
-      specialties: "Speaking practice, Conversation club",
-      practicingSince: new Date("2026-01-01T00:00:00.000Z"),
-      isFounder: false,
-      sortOrder: 1,
-    },
-  });
-
-  const assistantPasswordHash = await bcrypt.hash("assistant123", 10);
-  await prisma.user.upsert({
-    where: { email: "assistant@example.com" },
-    update: { profileId: assistantProfile.id },
-    create: {
-      email: "assistant@example.com",
-      passwordHash: assistantPasswordHash,
-      name: "Софія",
-      role: "TEACHER",
-      profileId: assistantProfile.id,
-    },
-  });
-
-  await prisma.user.upsert({
-    where: { email: "student2@example.com" },
-    update: {},
-    create: {
-      email: "student2@example.com",
-      passwordHash: await bcrypt.hash("student123", 10),
-      name: "Другий Учень",
-      role: "STUDENT",
-      teacherId: assistantProfile.id,
-    },
-  });
-
   console.log("Seed complete.");
-  console.log(`Founder login:        ${teacherEmail} / ${teacherPassword}`);
-  console.log("Demo student login:   student@example.com / student123");
-  console.log("Assistant teacher:    assistant@example.com / assistant123 (only sees student2@example.com)");
-  console.log("Second demo student:  student2@example.com / student123");
+  console.log(`Founder login: ${teacherEmail} / ${teacherPassword}`);
 }
 
 main()
