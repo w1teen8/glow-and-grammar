@@ -59,13 +59,12 @@ export default function AdminPage() {
     return teachers.find((t) => t.id === teacherId)?.name ?? "—";
   }
 
-  async function handleResetPassword(student: Student) {
-    if (!confirm(`Показати пароль для ${student.name}? Буде згенеровано новий пароль — старий одразу перестане працювати.`)) return;
+  async function handleShowPassword(student: Student) {
     setResettingId(student.id);
-    const res = await fetch(`/api/students/${student.id}/reset-password`, { method: "POST" });
+    const res = await fetch(`/api/students/${student.id}/password`);
     setResettingId(null);
     if (!res.ok) {
-      alert("Не вдалося скинути пароль.");
+      alert("Не вдалося отримати пароль.");
       return;
     }
     const data = await res.json();
@@ -231,7 +230,7 @@ export default function AdminPage() {
                       </div>
                     ) : (
                       <button
-                        onClick={() => handleResetPassword(s)}
+                        onClick={() => handleShowPassword(s)}
                         disabled={resettingId === s.id}
                         className="text-xs font-medium text-olive-500 underline decoration-olive-300 underline-offset-2 transition hover:text-olive-700 disabled:opacity-50"
                       >

@@ -23,6 +23,10 @@ services:
           property: connectionString
       - key: NEXTAUTH_SECRET
         generateValue: true
+      # Decrypts stored student passwords for the admin "Показати пароль"
+      # view — see src/lib/password-crypto.ts.
+      - key: PASSWORD_ENCRYPTION_KEY
+        generateValue: true
       - key: TEACHER_EMAIL
         value: milena@glowandgrammar.com
       - key: TEACHER_PASSWORD

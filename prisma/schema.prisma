@@ -21,6 +21,11 @@ model User {
   id           String   @id @default(cuid())
   email        String   @unique
   passwordHash String
+  // AES-256-GCM encrypted copy of the same password, decryptable only with
+  // PASSWORD_ENCRYPTION_KEY — lets the founder view a student's static
+  // login password on demand instead of only ever resetting it. Login
+  // itself still checks passwordHash, never this field.
+  passwordEncrypted String?
   name         String
   role         String
   createdAt    DateTime @default(now())

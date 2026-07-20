@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { requireSession, requireAdmin } from "@/lib/auth";
 import { studentScopeFilter } from "@/lib/permissions";
 import { handleApiError, jsonError } from "@/lib/api-helpers";
+import { encryptPassword } from "@/lib/password-crypto";
 
 // GET: the founder gets every student; any other teacher gets only their own
 // assigned students; a student gets just themselves.
@@ -48,6 +49,7 @@ export async function POST(req: NextRequest) {
         name,
         email: email.toLowerCase().trim(),
         passwordHash,
+        passwordEncrypted: encryptPassword(password),
         role: "STUDENT",
         teacherId: teacherId ?? null,
       },
