@@ -13,6 +13,11 @@ function getClient() {
     region: "auto",
     endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
     credentials: { accessKeyId, secretAccessKey },
+    // Newer SDK versions add a request checksum trailer by default, which R2
+    // doesn't validate the same way S3 does — that mismatch is what surfaces
+    // as a "signature does not match" error, not a bad key.
+    requestChecksumCalculation: "WHEN_REQUIRED",
+    responseChecksumValidation: "WHEN_REQUIRED",
   });
 }
 
