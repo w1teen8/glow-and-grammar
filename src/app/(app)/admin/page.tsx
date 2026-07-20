@@ -60,7 +60,7 @@ export default function AdminPage() {
   }
 
   async function handleResetPassword(student: Student) {
-    if (!confirm(`Скинути пароль для ${student.name}? Старий пароль одразу перестане працювати.`)) return;
+    if (!confirm(`Показати пароль для ${student.name}? Буде згенеровано новий пароль — старий одразу перестане працювати.`)) return;
     setResettingId(student.id);
     const res = await fetch(`/api/students/${student.id}/reset-password`, { method: "POST" });
     setResettingId(null);
@@ -235,7 +235,7 @@ export default function AdminPage() {
                         disabled={resettingId === s.id}
                         className="text-xs font-medium text-olive-500 underline decoration-olive-300 underline-offset-2 transition hover:text-olive-700 disabled:opacity-50"
                       >
-                        {resettingId === s.id ? "Скидання…" : "Скинути пароль"}
+                        {resettingId === s.id ? "Зачекайте…" : "Показати пароль"}
                       </button>
                     )}
                   </td>
