@@ -1,15 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
 import { handleApiError, jsonError } from "@/lib/api-helpers";
+import { uploadToStorage, deleteFromStorage } from "@/lib/storage";
 
-// NOTE (production): same caveat as homework audio uploads — this writes to
-// the local filesystem, which does not persist across deploys/restarts on
-// most hosts (including Render's free web service disk). Swap for
-// Vercel Blob / S3 if attachments need to survive redeploys.
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "lessons");
 const MAX_SIZE_BYTES = 20 * 1024 * 1024;
 
 // Only the founder builds the syllabus, same as editing a lesson's other fields.
@@ -24,13 +19,13 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     if (!file) return jsonError("No file provided");
     if (file.size > MAX_SIZE_BYTES) return jsonError("File is too large (max 20MB)");
 
-    await mkdir(UPLOAD_DIR, { recursive: true });
     const ext = path.extname(file.name) || "";
     const filename = `${lesson.id}-${Date.now()}${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join(UPLOAD_DIR, filename), buffer);
+    const publicUrl = await uploadToStorage(`lessons/${filename}`, buffer, file.type || "application/octet-stream");
 
-    const publicUrl = `/uploads/lessons/${filename}`;
+    if (lesson.attachmentUrl) await deleteFromStorage(lesson.attachmentUrl);
+
     const updated = await prisma.lesson.update({
       where: { id: params.id },
       data: { attachmentUrl: publicUrl, attachmentName: file.name },
@@ -43,6 +38,9 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
   return handleApiError(async () => {
     await requireAdmin();
+    const lesson = await prisma.lesson.findUnique({ where: { id: params.id } });
+    if (lesson?.attachmentUrl) await deleteFromStorage(lesson.attachmentUrl);
+
     const updated = await prisma.lesson.update({
       where: { id: params.id },
       data: { attachmentUrl: null, attachmentName: null },

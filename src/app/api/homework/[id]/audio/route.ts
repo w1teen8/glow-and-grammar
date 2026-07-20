@@ -1,16 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
 import { prisma } from "@/lib/prisma";
 import { requireSession } from "@/lib/auth";
 import { assertCanManageStudent } from "@/lib/permissions";
 import { handleApiError, jsonError } from "@/lib/api-helpers";
-
-// NOTE (production): this writes to the local filesystem, which does not
-// persist on serverless hosts (e.g. Vercel). Swap this for Vercel Blob / S3
-// before deploying there — everything else (the `audioUrl` string on the
-// Homework row) stays the same, only where the bytes land changes.
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "audio");
+import { uploadToStorage } from "@/lib/storage";
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   return handleApiError(async () => {
@@ -36,13 +29,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       await assertCanManageStudent(session, homework.studentId);
     }
 
-    await mkdir(UPLOAD_DIR, { recursive: true });
     const ext = file.type.includes("webm") ? "webm" : file.type.includes("mp4") ? "m4a" : "ogg";
     const filename = `${homework.id}-${kind}-${Date.now()}.${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join(UPLOAD_DIR, filename), buffer);
-
-    const publicUrl = `/uploads/audio/${filename}`;
+    const publicUrl = await uploadToStorage(`audio/${filename}`, buffer, file.type || "audio/webm");
 
     const updated = await prisma.homework.update({
       where: { id: params.id },
