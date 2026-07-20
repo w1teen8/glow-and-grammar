@@ -22,6 +22,8 @@ export default function VocabBlockCard({
   const [savingDate, setSavingDate] = useState(false);
   const [savingLearned, setSavingLearned] = useState(false);
   const [savingItemId, setSavingItemId] = useState<string | null>(null);
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({ english: "", translation: "" });
 
   async function saveDueDate() {
     setSavingDate(true);
@@ -53,6 +55,24 @@ export default function VocabBlockCard({
       body: JSON.stringify({ learned }),
     });
     setSavingItemId(null);
+    onChanged();
+  }
+
+  function startEditItem(item: { id: string; english: string; translation: string }) {
+    setEditingItemId(item.id);
+    setEditForm({ english: item.english, translation: item.translation });
+  }
+
+  async function saveEditItem() {
+    if (!editingItemId) return;
+    setSavingItemId(editingItemId);
+    await fetch(`/api/vocab-items/${editingItemId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(editForm),
+    });
+    setSavingItemId(null);
+    setEditingItemId(null);
     onChanged();
   }
 
@@ -100,31 +120,65 @@ export default function VocabBlockCard({
       </div>
 
       <div className="divide-y divide-olive/10">
-        {block.vocabItems.map((v) => (
-          <div key={v.id} className="flex items-center gap-3 px-5 py-2.5">
-            {selectable && (
+        {block.vocabItems.map((v) =>
+          editingItemId === v.id ? (
+            <div key={v.id} className="flex items-center gap-2 bg-pink-50/50 px-5 py-2">
               <input
-                type="checkbox"
-                checked={selectedIds?.has(v.id) ?? false}
-                onChange={() => onToggleSelect?.({ id: v.id, english: v.english, translation: v.translation })}
-                className="h-4 w-4 shrink-0 accent-pink"
+                value={editForm.english}
+                onChange={(e) => setEditForm((f) => ({ ...f, english: e.target.value }))}
+                className="flex-1 rounded-lg border border-olive/20 px-2 py-1 text-sm outline-none focus:border-olive"
+                autoFocus
               />
-            )}
-            <span className="flex-1 text-sm text-olive-700">{v.english}</span>
-            <span className="flex-1 text-sm text-olive-500">{v.translation}</span>
-            <button
-              onClick={() => toggleItemLearned(v.id, !v.learned)}
-              disabled={savingItemId === v.id}
-              className={`shrink-0 rounded-full border px-2.5 py-0.5 text-xs font-medium transition disabled:opacity-60 ${
-                v.learned
-                  ? "border-emerald-300 bg-emerald-100 text-emerald-800 hover:brightness-95"
-                  : "border-olive/20 bg-white text-olive-400 hover:bg-olive/5"
-              }`}
-            >
-              {v.learned ? "Вивчено ✓" : "Ще вчимо"}
-            </button>
-          </div>
-        ))}
+              <input
+                value={editForm.translation}
+                onChange={(e) => setEditForm((f) => ({ ...f, translation: e.target.value }))}
+                className="flex-1 rounded-lg border border-olive/20 px-2 py-1 text-sm outline-none focus:border-olive"
+              />
+              <button
+                onClick={saveEditItem}
+                disabled={savingItemId === v.id}
+                className="shrink-0 rounded-full bg-pink px-3 py-1 text-xs font-medium text-olive-900 shadow-soft disabled:opacity-60"
+              >
+                {savingItemId === v.id ? "…" : "Зберегти"}
+              </button>
+              <button onClick={() => setEditingItemId(null)} className="shrink-0 text-xs text-olive-400 underline">
+                Скасувати
+              </button>
+            </div>
+          ) : (
+            <div key={v.id} className="flex items-center gap-3 px-5 py-2.5">
+              {selectable && (
+                <input
+                  type="checkbox"
+                  checked={selectedIds?.has(v.id) ?? false}
+                  onChange={() => onToggleSelect?.({ id: v.id, english: v.english, translation: v.translation })}
+                  className="h-4 w-4 shrink-0 accent-pink"
+                />
+              )}
+              <span className="flex-1 text-sm text-olive-700">{v.english}</span>
+              <span className="flex-1 text-sm text-olive-500">{v.translation}</span>
+              {canEditDueDate && (
+                <button
+                  onClick={() => startEditItem(v)}
+                  className="shrink-0 text-xs text-olive-400 underline hover:text-olive-600"
+                >
+                  Редагувати
+                </button>
+              )}
+              <button
+                onClick={() => toggleItemLearned(v.id, !v.learned)}
+                disabled={savingItemId === v.id}
+                className={`shrink-0 rounded-full border px-2.5 py-0.5 text-xs font-medium transition disabled:opacity-60 ${
+                  v.learned
+                    ? "border-emerald-300 bg-emerald-100 text-emerald-800 hover:brightness-95"
+                    : "border-olive/20 bg-white text-olive-400 hover:bg-olive/5"
+                }`}
+              >
+                {v.learned ? "Вивчено ✓" : "Ще вчимо"}
+              </button>
+            </div>
+          )
+        )}
       </div>
     </div>
   );

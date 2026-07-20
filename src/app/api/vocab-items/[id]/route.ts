@@ -19,28 +19,37 @@ async function resolveStudentId(vocabItemId: string) {
   return { item, studentId: item.block?.lesson.studentId ?? item.homework?.studentId ?? null };
 }
 
-// A teacher (scoped to their own student) can toggle any word's learned
-// status; a student can only toggle their own.
+// A teacher (scoped to their own student) can edit the word/translation and
+// toggle learned; a student can only toggle their own "learned" status.
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   return handleApiError(async () => {
     const session = await requireSession();
     const resolved = await resolveStudentId(params.id);
     if (!resolved || !resolved.studentId) return jsonError("Not found", 404);
 
+    const body = await req.json();
+
     if (session.user.role === "TEACHER") {
       await assertCanManageStudent(session, resolved.studentId);
-    } else if (resolved.studentId !== session.user.id) {
-      return jsonError("Forbidden", 403);
+      const { learned, english, translation } = body;
+      const updated = await prisma.vocabItem.update({
+        where: { id: params.id },
+        data: {
+          ...(typeof learned === "boolean" && { learned }),
+          ...(typeof english === "string" && english.trim() && { english: english.trim() }),
+          ...(typeof translation === "string" && translation.trim() && { translation: translation.trim() }),
+        },
+      });
+      return NextResponse.json(updated);
     }
 
-    const { learned } = await req.json();
-    if (typeof learned !== "boolean") return jsonError("learned (boolean) is required");
+    if (resolved.studentId !== session.user.id) return jsonError("Forbidden", 403);
+    if (typeof body.learned !== "boolean") return jsonError("Students can only update the learned status");
 
     const updated = await prisma.vocabItem.update({
       where: { id: params.id },
-      data: { learned },
+      data: { learned: body.learned },
     });
-
     return NextResponse.json(updated);
   });
 }
