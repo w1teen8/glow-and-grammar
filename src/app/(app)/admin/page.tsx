@@ -22,6 +22,9 @@ export default function AdminPage() {
   const [resettingId, setResettingId] = useState<string | null>(null);
   const [revealed, setRevealed] = useState<{ id: string; password: string } | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({ name: "", email: "", teacherId: "" });
+  const [savingEdit, setSavingEdit] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -75,6 +78,28 @@ export default function AdminPage() {
     setTimeout(() => {
       setRevealed((r) => (r?.id === student.id ? null : r));
     }, REVEAL_MS);
+  }
+
+  function startEdit(student: Student) {
+    setEditingId(student.id);
+    setEditForm({ name: student.name, email: student.email, teacherId: student.teacherId ?? "" });
+  }
+
+  async function saveEdit() {
+    if (!editingId) return;
+    setSavingEdit(true);
+    const res = await fetch(`/api/students/${editingId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(editForm),
+    });
+    setSavingEdit(false);
+    if (!res.ok) {
+      alert("Не вдалося зберегти зміни.");
+      return;
+    }
+    setEditingId(null);
+    load();
   }
 
   async function handleDeleteStudent(student: Student) {
@@ -210,17 +235,71 @@ export default function AdminPage() {
                   className="animate-fade-in-left border-b border-olive/10 transition-colors last:border-0 hover:bg-olive/5"
                   style={{ animationDelay: `${i * 50}ms` }}
                 >
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pink-50 text-xs font-semibold text-pink-700">
-                        {s.name.charAt(0).toUpperCase()}
-                      </span>
-                      <span className="font-medium text-olive-700">{s.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-olive-500">{s.email}</td>
-                  <td className="px-4 py-3 text-olive-500">{teacherName(s.teacherId)}</td>
-                  <td className="px-4 py-3">
+                  {editingId === s.id ? (
+                    <>
+                      <td className="px-4 py-3">
+                        <input
+                          value={editForm.name}
+                          onChange={(e) => setEditForm((f) => ({ ...f, name: e.target.value }))}
+                          className="w-full rounded-lg border border-olive/20 px-2 py-1.5 text-sm outline-none focus:border-olive"
+                        />
+                      </td>
+                      <td className="px-4 py-3">
+                        <input
+                          type="email"
+                          value={editForm.email}
+                          onChange={(e) => setEditForm((f) => ({ ...f, email: e.target.value }))}
+                          className="w-full rounded-lg border border-olive/20 px-2 py-1.5 text-sm outline-none focus:border-olive"
+                        />
+                      </td>
+                      <td className="px-4 py-3">
+                        <select
+                          value={editForm.teacherId}
+                          onChange={(e) => setEditForm((f) => ({ ...f, teacherId: e.target.value }))}
+                          className="w-full rounded-lg border border-olive/20 px-2 py-1.5 text-sm outline-none focus:border-olive"
+                        >
+                          <option value="">Не обрано</option>
+                          {teachers.map((t) => (
+                            <option key={t.id} value={t.id}>
+                              {t.name}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="px-4 py-3" colSpan={2}>
+                        <div className="flex flex-wrap gap-3 text-xs">
+                          <button
+                            onClick={saveEdit}
+                            disabled={savingEdit}
+                            className="rounded-full bg-pink px-3 py-1.5 font-medium text-olive-900 shadow-soft disabled:opacity-60"
+                          >
+                            {savingEdit ? "Збереження…" : "Зберегти"}
+                          </button>
+                          <button onClick={() => setEditingId(null)} className="text-olive-500 underline">
+                            Скасувати
+                          </button>
+                        </div>
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pink-50 text-xs font-semibold text-pink-700">
+                            {s.name.charAt(0).toUpperCase()}
+                          </span>
+                          <span className="font-medium text-olive-700">{s.name}</span>
+                          <button
+                            onClick={() => startEdit(s)}
+                            className="text-xs text-olive-400 underline decoration-olive-300 underline-offset-2 hover:text-olive-600"
+                          >
+                            Редагувати
+                          </button>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-olive-500">{s.email}</td>
+                      <td className="px-4 py-3 text-olive-500">{teacherName(s.teacherId)}</td>
+                      <td className="px-4 py-3">
                     {revealed?.id === s.id ? (
                       <div className="flex animate-scale-in items-center gap-2">
                         <span className="rounded-md border border-pink/30 bg-pink-50 px-2 py-1 font-mono text-xs font-semibold tracking-wide text-olive-900">
@@ -269,6 +348,8 @@ export default function AdminPage() {
                       {deletingId === s.id ? "Видалення…" : "Видалити"}
                     </button>
                   </td>
+                    </>
+                  )}
                 </tr>
               ))}
             </tbody>
