@@ -60,14 +60,32 @@ export default function AudioRecorder({
     setError(null);
     try {
       const blob = await fetch(blobUrl).then((r) => r.blob());
-      const formData = new FormData();
-      formData.append("file", blob, "recording.webm");
-      formData.append("kind", kind);
-      const res = await fetch(`/api/homework/${homeworkId}/audio`, { method: "POST", body: formData });
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
+      const contentType = blob.type || "audio/webm";
+
+      const presignRes = await fetch(`/api/homework/${homeworkId}/audio/presign`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind, contentType }),
+      });
+      if (!presignRes.ok) {
+        const data = await presignRes.json().catch(() => null);
         throw new Error(data?.error ?? "upload failed");
       }
+      const { uploadUrl, publicUrl } = await presignRes.json();
+
+      const putRes = await fetch(uploadUrl, { method: "PUT", headers: { "Content-Type": contentType }, body: blob });
+      if (!putRes.ok) throw new Error("upload failed");
+
+      const confirmRes = await fetch(`/api/homework/${homeworkId}/audio`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: publicUrl, kind }),
+      });
+      if (!confirmRes.ok) {
+        const data = await confirmRes.json().catch(() => null);
+        throw new Error(data?.error ?? "upload failed");
+      }
+
       setBlobUrl(null);
       onUploaded();
     } catch (err) {

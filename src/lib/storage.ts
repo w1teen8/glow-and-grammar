@@ -1,4 +1,5 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 // Cloudflare R2 is S3-compatible — same SDK, just a different endpoint.
 // Falls back to null (caller must handle) if env vars aren't set yet, so the
@@ -40,6 +41,30 @@ export async function uploadToStorage(key: string, buffer: Buffer, contentType: 
   );
 
   return `${publicBase.replace(/\/$/, "")}/${key}`;
+}
+
+// A URL the browser can PUT the file bytes to directly, bypassing our
+// server entirely — avoids buffering large files through Render's free-tier
+// instance (slow, memory-limited, and prone to timing out mid-upload).
+// Expires quickly since it's only meant to be used right after issuing it.
+export async function getPresignedUploadUrl(
+  key: string,
+  contentType: string
+): Promise<{ uploadUrl: string; publicUrl: string }> {
+  const client = getClient();
+  const bucket = process.env.R2_BUCKET_NAME;
+  const publicBase = process.env.R2_PUBLIC_URL;
+  if (!client || !bucket || !publicBase) {
+    throw new Error("R2 storage is not configured (R2_ACCOUNT_ID / R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY / R2_BUCKET_NAME / R2_PUBLIC_URL)");
+  }
+
+  const uploadUrl = await getSignedUrl(
+    client,
+    new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: contentType }),
+    { expiresIn: 300 }
+  );
+
+  return { uploadUrl, publicUrl: `${publicBase.replace(/\/$/, "")}/${key}` };
 }
 
 // Best-effort — callers don't need to fail the request if cleanup of the old

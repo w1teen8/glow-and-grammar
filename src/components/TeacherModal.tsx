@@ -57,13 +57,34 @@ export default function TeacherModal({
     const saved = await res.json();
 
     if (photoFile) {
-      const photoData = new FormData();
-      photoData.append("file", photoFile);
-      const photoRes = await fetch(`/api/teachers/${saved.id}/photo`, { method: "POST", body: photoData });
-      if (!photoRes.ok) {
-        const data = await photoRes.json().catch(() => null);
+      try {
+        const presignRes = await fetch(`/api/teachers/${saved.id}/photo/presign`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contentType: photoFile.type, size: photoFile.size }),
+        });
+        if (!presignRes.ok) {
+          const data = await presignRes.json().catch(() => null);
+          throw new Error(data?.error ?? "невідома помилка");
+        }
+        const { uploadUrl, publicUrl } = await presignRes.json();
+
+        const putRes = await fetch(uploadUrl, {
+          method: "PUT",
+          headers: { "Content-Type": photoFile.type },
+          body: photoFile,
+        });
+        if (!putRes.ok) throw new Error("завантаження не вдалося");
+
+        const confirmRes = await fetch(`/api/teachers/${saved.id}/photo`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: publicUrl }),
+        });
+        if (!confirmRes.ok) throw new Error("не вдалося зберегти фото");
+      } catch (err) {
         setSaving(false);
-        setError(`Профіль збережено, але фото завантажити не вдалося: ${data?.error ?? "невідома помилка"}`);
+        setError(`Профіль збережено, але фото завантажити не вдалося: ${err instanceof Error ? err.message : "невідома помилка"}`);
         return;
       }
     }

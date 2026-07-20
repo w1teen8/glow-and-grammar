@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireSession, requireAdmin } from "@/lib/auth";
 import { assertCanManageStudent } from "@/lib/permissions";
 import { handleApiError, jsonError } from "@/lib/api-helpers";
+import { deleteFromStorage } from "@/lib/storage";
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   return handleApiError(async () => {
@@ -32,7 +33,16 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   return handleApiError(async () => {
     await requireAdmin();
     const body = await req.json();
-    const { date, grammar, vocabulary, readingListening, speaking, writing, status, lessonLink } = body;
+    const { date, grammar, vocabulary, readingListening, speaking, writing, status, lessonLink, attachmentUrl, attachmentName } = body;
+
+    // Confirms a direct browser→R2 upload (see ./attachment/presign) by
+    // saving the resulting URL — clean up whatever was there before.
+    if (attachmentUrl !== undefined) {
+      const existing = await prisma.lesson.findUnique({ where: { id: params.id }, select: { attachmentUrl: true } });
+      if (existing?.attachmentUrl && existing.attachmentUrl !== attachmentUrl) {
+        await deleteFromStorage(existing.attachmentUrl);
+      }
+    }
 
     const lesson = await prisma.lesson.update({
       where: { id: params.id },
@@ -45,6 +55,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
         ...(writing !== undefined && { writing }),
         ...(status && { status }),
         ...(lessonLink !== undefined && { lessonLink }),
+        ...(attachmentUrl !== undefined && { attachmentUrl }),
+        ...(attachmentName !== undefined && { attachmentName }),
       },
     });
 

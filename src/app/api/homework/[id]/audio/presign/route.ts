@@ -3,17 +3,16 @@ import { prisma } from "@/lib/prisma";
 import { requireSession } from "@/lib/auth";
 import { assertCanManageStudent } from "@/lib/permissions";
 import { handleApiError, jsonError } from "@/lib/api-helpers";
+import { getPresignedUploadUrl } from "@/lib/storage";
 
-// Confirms a direct browser→R2 upload (see ./presign) by recording the
-// resulting URL — the file itself never passes through this route.
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   return handleApiError(async () => {
     const session = await requireSession();
     const homework = await prisma.homework.findUnique({ where: { id: params.id } });
     if (!homework) return jsonError("Not found", 404);
 
-    const { url, kind = "answer" } = await req.json();
-    if (!url) return jsonError("url is required");
+    const { kind = "answer", contentType } = await req.json();
+    if (!contentType) return jsonError("contentType is required");
 
     if (kind === "answer") {
       if (session.user.role === "TEACHER") {
@@ -26,11 +25,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       await assertCanManageStudent(session, homework.studentId);
     }
 
-    const updated = await prisma.homework.update({
-      where: { id: params.id },
-      data: kind === "feedback" ? { feedbackAudioUrl: url } : { audioUrl: url },
-    });
+    const ext = contentType.includes("webm") ? "webm" : contentType.includes("mp4") ? "m4a" : "ogg";
+    const key = `audio/${homework.id}-${kind}-${Date.now()}.${ext}`;
+    const { uploadUrl, publicUrl } = await getPresignedUploadUrl(key, contentType || "audio/webm");
 
-    return NextResponse.json({ url, homework: updated });
+    return NextResponse.json({ uploadUrl, publicUrl });
   });
 }

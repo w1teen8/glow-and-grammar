@@ -23,13 +23,30 @@ export default function PhotoAnswer({
     setError(null);
     try {
       for (const file of Array.from(files)) {
-        const formData = new FormData();
-        formData.append("file", file);
-        const res = await fetch(`/api/homework/${homeworkId}/photos`, { method: "POST", body: formData });
-        if (!res.ok) {
-          const data = await res.json().catch(() => null);
+        const presignRes = await fetch(`/api/homework/${homeworkId}/photos/presign`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contentType: file.type, size: file.size }),
+        });
+        if (!presignRes.ok) {
+          const data = await presignRes.json().catch(() => null);
           throw new Error(data?.error ?? "upload failed");
         }
+        const { uploadUrl, publicUrl } = await presignRes.json();
+
+        const putRes = await fetch(uploadUrl, {
+          method: "PUT",
+          headers: { "Content-Type": file.type },
+          body: file,
+        });
+        if (!putRes.ok) throw new Error("upload failed");
+
+        const confirmRes = await fetch(`/api/homework/${homeworkId}/photos`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: publicUrl }),
+        });
+        if (!confirmRes.ok) throw new Error("upload failed");
       }
       onChanged();
     } catch (err) {

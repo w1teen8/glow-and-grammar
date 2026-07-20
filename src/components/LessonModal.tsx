@@ -30,6 +30,7 @@ export default function LessonModal({
     lesson?.attachmentUrl ? { url: lesson.attachmentUrl, name: lesson.attachmentName } : null
   );
   const [removingAttachment, setRemovingAttachment] = useState(false);
+  const [uploadStage, setUploadStage] = useState<string | null>(null);
 
   function set<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -48,11 +49,38 @@ export default function LessonModal({
 
     if (file && res.ok) {
       const saved = await res.json();
-      const uploadData = new FormData();
-      uploadData.append("file", file);
-      await fetch(`/api/lessons/${saved.id}/attachment`, { method: "POST", body: uploadData });
+      try {
+        setUploadStage("Завантаження файлу…");
+        // Ask our server for a signed R2 URL, then upload the bytes straight
+        // from the browser to R2 — no relaying through our server.
+        const presignRes = await fetch(`/api/lessons/${saved.id}/attachment/presign`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ filename: file.name, contentType: file.type || "application/octet-stream", size: file.size }),
+        });
+        if (!presignRes.ok) throw new Error("presign failed");
+        const { uploadUrl, publicUrl } = await presignRes.json();
+
+        const putRes = await fetch(uploadUrl, {
+          method: "PUT",
+          headers: { "Content-Type": file.type || "application/octet-stream" },
+          body: file,
+        });
+        if (!putRes.ok) throw new Error("upload failed");
+
+        setUploadStage("Збереження…");
+        await fetch(`/api/lessons/${saved.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ attachmentUrl: publicUrl, attachmentName: file.name }),
+        });
+      } catch {
+        // The lesson itself is already saved — only the file failed, so we
+        // still close normally rather than blocking the whole save.
+      }
     }
 
+    setUploadStage(null);
     setSaving(false);
     onSaved();
   }
@@ -197,7 +225,7 @@ export default function LessonModal({
             disabled={saving}
             className="rounded-full bg-pink px-5 py-2 text-sm font-medium text-olive-900 shadow-soft disabled:opacity-60"
           >
-            {saving ? "Збереження…" : "Зберегти"}
+            {saving ? uploadStage ?? "Збереження…" : "Зберегти"}
           </button>
         </div>
       </form>
