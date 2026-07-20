@@ -26,6 +26,7 @@ export default function TeacherModal({
     isFounder: teacher?.isFounder ?? false,
   });
   const [account, setAccount] = useState({ email: "", password: "" });
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,11 +54,23 @@ export default function TeacherModal({
       return;
     }
 
+    const saved = await res.json();
+
+    if (photoFile) {
+      const photoData = new FormData();
+      photoData.append("file", photoFile);
+      const photoRes = await fetch(`/api/teachers/${saved.id}/photo`, { method: "POST", body: photoData });
+      if (!photoRes.ok) {
+        setSaving(false);
+        setError("Профіль збережено, але фото завантажити не вдалося. Спробуйте ще раз нижче.");
+        return;
+      }
+    }
+
     // Creating a brand-new (non-founder) profile can also set up that
     // person's login in the same step.
     if (!teacher && account.email && account.password) {
-      const { id } = await res.json();
-      const accountRes = await fetch(`/api/teachers/${id}/account`, {
+      const accountRes = await fetch(`/api/teachers/${saved.id}/account`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(account),
@@ -110,7 +123,27 @@ export default function TeacherModal({
           className="mb-3 w-full rounded-lg border border-olive/20 px-3 py-2 outline-none focus:border-olive"
         />
 
-        <Label>Фото (URL)</Label>
+        <Label>Фото</Label>
+        {(teacher?.photoUrl || photoFile) && (
+          <div className="mb-2 flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={photoFile ? URL.createObjectURL(photoFile) : teacher!.photoUrl!}
+              alt="Поточне фото"
+              className="h-14 w-14 rounded-full border border-olive/20 object-cover"
+            />
+            <span className="text-xs text-olive-400">
+              {photoFile ? "Нове фото (завантажиться при збереженні)" : "Поточне фото"}
+            </span>
+          </div>
+        )}
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
+          className="mb-2 w-full rounded-lg border border-olive/20 bg-white px-3 py-2 text-sm outline-none focus:border-olive"
+        />
+        <Label>або посилання на фото (URL)</Label>
         <input
           value={form.photoUrl}
           onChange={(e) => set("photoUrl", e.target.value)}

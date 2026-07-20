@@ -1,6 +1,6 @@
 "use client";
 
-import { experienceLabel } from "@/lib/experience";
+import { experienceLabel, teachingExperienceLabel } from "@/lib/experience";
 import type { TeacherProfile } from "@/types/models";
 
 export default function TeacherCard({
@@ -47,6 +47,9 @@ export default function TeacherCard({
           <h2 className="font-display text-xl font-semibold tracking-tight text-olive-900">{teacher.name}</h2>
           <p className="text-sm font-medium text-olive-500">{teacher.title}</p>
           <p className="mt-1 text-xs font-medium uppercase tracking-wide text-pink-700">{experience}</p>
+          {teacher.isFounder && (
+            <p className="mt-0.5 text-xs font-medium text-olive-400">{teachingExperienceLabel()}</p>
+          )}
         </div>
       </div>
 
