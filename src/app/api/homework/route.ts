@@ -25,7 +25,11 @@ export async function GET(req: NextRequest) {
         ...(studentId && { studentId }),
         ...(lessonId && { lessonId }),
       },
-      include: { vocabItems: { orderBy: { sortOrder: "asc" } }, lesson: { select: { id: true, date: true, grammar: true } } },
+      include: {
+        vocabItems: { orderBy: { sortOrder: "asc" } },
+        lesson: { select: { id: true, date: true, grammar: true } },
+        photos: { orderBy: { createdAt: "asc" } },
+      },
       orderBy: { deadline: "asc" },
     });
 

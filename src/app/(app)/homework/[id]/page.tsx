@@ -6,6 +6,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import StatusBadge from "@/components/StatusBadge";
 import AudioRecorder from "@/components/AudioRecorder";
+import PhotoAnswer from "@/components/PhotoAnswer";
 import VocabList from "@/components/VocabList";
 import FeedbackSection from "@/components/FeedbackSection";
 import type { Homework, HomeworkStatus } from "@/types/models";
@@ -26,6 +27,8 @@ export default function HomeworkDetailPage() {
 
   const [homework, setHomework] = useState<Homework | null>(null);
   const [loading, setLoading] = useState(true);
+  const [answerText, setAnswerText] = useState("");
+  const [savingText, setSavingText] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -39,6 +42,10 @@ export default function HomeworkDetailPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
+  useEffect(() => {
+    setAnswerText(homework?.answerText ?? "");
+  }, [homework?.id, homework?.answerText]);
+
   async function updateStatus(status: HomeworkStatus) {
     if (!homework) return;
     await fetch(`/api/homework/${homework.id}`, {
@@ -46,6 +53,18 @@ export default function HomeworkDetailPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
     });
+    load();
+  }
+
+  async function saveAnswerText() {
+    if (!homework) return;
+    setSavingText(true);
+    await fetch(`/api/homework/${homework.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ answerText }),
+    });
+    setSavingText(false);
     load();
   }
 
@@ -104,6 +123,37 @@ export default function HomeworkDetailPage() {
         </div>
 
         <div className="mb-8">
+          <h2 className="mb-3 font-sans text-lg font-bold uppercase tracking-tight text-olive-800">Текстова відповідь</h2>
+          {isDone || isTeacher ? (
+            homework.answerText ? (
+              <p className="whitespace-pre-wrap rounded-lg bg-cream/60 p-4 text-sm text-olive-700">
+                {homework.answerText}
+              </p>
+            ) : (
+              <p className="text-sm text-olive-300">Тексту немає.</p>
+            )
+          ) : (
+            <div>
+              <textarea
+                value={answerText}
+                onChange={(e) => setAnswerText(e.target.value)}
+                rows={4}
+                placeholder="Напишіть свою відповідь тут…"
+                className="mb-2 w-full rounded-lg border border-olive/20 px-3 py-2 text-sm outline-none focus:border-olive"
+              />
+              <button
+                type="button"
+                onClick={saveAnswerText}
+                disabled={savingText || answerText === (homework.answerText ?? "")}
+                className="rounded-full bg-pink px-4 py-1.5 text-xs font-medium text-olive-900 shadow-soft disabled:opacity-60"
+              >
+                {savingText ? "Збереження…" : "Зберегти текст"}
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="mb-8">
           <h2 className="mb-3 font-sans text-lg font-bold uppercase tracking-tight text-olive-800">Аудіовідповідь</h2>
           <AudioRecorder
             homeworkId={homework.id}
@@ -115,7 +165,25 @@ export default function HomeworkDetailPage() {
         </div>
 
         <div className="mb-8">
-          <h2 className="mb-3 font-sans text-lg font-bold uppercase tracking-tight text-olive-800">Words to learn</h2>
+          <h2 className="mb-3 font-sans text-lg font-bold uppercase tracking-tight text-olive-800">Фото відповіді</h2>
+          <PhotoAnswer
+            homeworkId={homework.id}
+            photos={homework.photos}
+            disabled={isDone || isTeacher}
+            onChanged={load}
+          />
+        </div>
+
+        <div className="mb-8">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <h2 className="font-sans text-lg font-bold uppercase tracking-tight text-olive-800">Words to learn</h2>
+            <Link
+              href={studentId ? `/vocabulary?studentId=${studentId}` : "/vocabulary"}
+              className="text-xs font-medium text-pink-700 underline decoration-pink-300 underline-offset-2 hover:text-pink-500"
+            >
+              Перейти до слів →
+            </Link>
+          </div>
           <VocabList homeworkId={homework.id} items={homework.vocabItems} editable={!!isTeacher} onSaved={load} />
         </div>
 

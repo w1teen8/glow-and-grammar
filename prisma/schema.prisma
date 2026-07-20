@@ -111,14 +111,29 @@ model Homework {
   taskContent      String
   status           String   @default("TODO")
   audioUrl         String?
+  // The student's written answer — alongside the optional audioUrl and photos.
+  answerText       String?
   feedbackText     String?
   feedbackAudioUrl String?
   vocabItems       VocabItem[]
+  photos           HomeworkPhoto[]
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
   @@index([studentId])
   @@index([lessonId])
+}
+
+// Photos the student attaches to their answer (e.g. a photo of handwritten
+// work) — a separate table rather than one field, since there can be several.
+model HomeworkPhoto {
+  id         String   @id @default(cuid())
+  homework   Homework @relation(fields: [homeworkId], references: [id], onDelete: Cascade)
+  homeworkId String
+  url        String
+  createdAt  DateTime @default(now())
+
+  @@index([homeworkId])
 }
 
 // A batch of words assigned in one lesson, with its own "learn by" date and

@@ -9,7 +9,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     const session = await requireSession();
     const homework = await prisma.homework.findUnique({
       where: { id: params.id },
-      include: { vocabItems: { orderBy: { sortOrder: "asc" } }, lesson: true },
+      include: { vocabItems: { orderBy: { sortOrder: "asc" } }, lesson: true, photos: { orderBy: { createdAt: "asc" } } },
     });
     if (!homework) return jsonError("Not found", 404);
     if (session.user.role === "TEACHER") {
@@ -46,7 +46,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
           ...(feedbackText !== undefined && { feedbackText }),
           ...(feedbackAudioUrl !== undefined && { feedbackAudioUrl }),
         },
-        include: { vocabItems: true },
+        include: { vocabItems: true, photos: { orderBy: { createdAt: "asc" } } },
       });
       return NextResponse.json(homework);
     }
@@ -55,7 +55,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (existing.studentId !== session.user.id) return jsonError("Forbidden", 403);
     if (existing.status === "DONE") return jsonError("This homework is already marked Done", 409);
 
-    const { status, audioUrl } = body;
+    const { status, audioUrl, answerText } = body;
     const allowedStatuses = ["TODO", "IN_PROGRESS", "CHECKING"];
     if (status && !allowedStatuses.includes(status)) {
       return jsonError("Students can only move a task between To Do, In Progress and Checking");
@@ -66,8 +66,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       data: {
         ...(status && { status }),
         ...(audioUrl !== undefined && { audioUrl }),
+        ...(answerText !== undefined && { answerText }),
       },
-      include: { vocabItems: true },
+      include: { vocabItems: true, photos: { orderBy: { createdAt: "asc" } } },
     });
     return NextResponse.json(homework);
   });

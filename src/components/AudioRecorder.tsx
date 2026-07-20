@@ -18,6 +18,7 @@ export default function AudioRecorder({
   const [recording, setRecording] = useState(false);
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -73,12 +74,41 @@ export default function AudioRecorder({
     }
   }
 
+  async function removeExisting() {
+    setDeleting(true);
+    setError(null);
+    try {
+      const field = kind === "answer" ? "audioUrl" : "feedbackAudioUrl";
+      const res = await fetch(`/api/homework/${homeworkId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [field]: null }),
+      });
+      if (!res.ok) throw new Error("delete failed");
+      onUploaded();
+    } catch {
+      setError("Не вдалося видалити запис. Спробуйте ще раз.");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   return (
     <div className="space-y-3">
       {existingUrl && (
         <div>
           <p className="mb-1 text-xs text-olive-400">Збережений запис:</p>
           <audio controls src={existingUrl} className="w-full" />
+          {!disabled && (
+            <button
+              type="button"
+              onClick={removeExisting}
+              disabled={deleting}
+              className="mt-1.5 text-xs text-rose-500 underline decoration-rose-300 hover:text-rose-700 disabled:opacity-50"
+            >
+              {deleting ? "Видалення…" : "Видалити запис"}
+            </button>
+          )}
         </div>
       )}
 

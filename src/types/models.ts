@@ -52,9 +52,11 @@ export type Homework = {
   taskContent: string;
   status: HomeworkStatus;
   audioUrl: string | null;
+  answerText: string | null;
   feedbackText: string | null;
   feedbackAudioUrl: string | null;
   vocabItems: VocabItem[];
+  photos: { id: string; url: string }[];
   lesson?: { id: string; date: string; grammar: string };
 };
 
