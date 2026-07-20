@@ -90,6 +90,9 @@ model Lesson {
   // separate from lessonLink, which is an external URL (Canva/Drive/etc.).
   attachmentUrl    String?
   attachmentName   String?
+  // A link to the recorded lesson (typically YouTube) — shown with an
+  // inline embedded player instead of just linking out.
+  recordingUrl     String?
   homework         Homework[]
   // Words assigned during this lesson, grouped into dated blocks (e.g. "learn
   // by 20.07") — separate from the per-homework "Words to learn" block.
@@ -161,6 +164,9 @@ model VocabItem {
   english     String
   translation String
   sortOrder   Int         @default(0)
+  // Per-word progress — separate from VocabBlock.learned, which marks the
+  // whole assigned batch done at once.
+  learned     Boolean     @default(false)
 
   @@index([blockId])
 }

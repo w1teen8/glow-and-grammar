@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   return handleApiError(async () => {
     await requireAdmin();
     const body = await req.json();
-    const { studentId, date, grammar, vocabulary, readingListening, speaking, writing, status, lessonLink } = body;
+    const { studentId, date, grammar, vocabulary, readingListening, speaking, writing, status, lessonLink, recordingUrl } = body;
 
     if (!studentId || !date) return jsonError("studentId and date are required");
 
@@ -52,6 +52,7 @@ export async function POST(req: NextRequest) {
         writing: writing ?? "",
         status: status ?? "IN_PROGRESS",
         lessonLink: lessonLink ?? null,
+        recordingUrl: recordingUrl ?? null,
       },
     });
 

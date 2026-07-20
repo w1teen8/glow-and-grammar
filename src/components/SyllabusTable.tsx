@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import StatusBadge from "./StatusBadge";
+import VideoModal from "./VideoModal";
 import type { Lesson } from "@/types/models";
 
 export default function SyllabusTable({
@@ -17,6 +19,7 @@ export default function SyllabusTable({
   const searchParams = useSearchParams();
   const studentId = searchParams.get("studentId");
   const hwSuffix = studentId ? `?studentId=${studentId}` : "";
+  const [openVideoUrl, setOpenVideoUrl] = useState<string | null>(null);
 
   return (
     <>
@@ -32,6 +35,7 @@ export default function SyllabusTable({
               <th className="px-4 py-3">Writing</th>
               <th className="px-4 py-3">Статус</th>
               <th className="px-4 py-3">Матеріал</th>
+              <th className="px-4 py-3">Запис</th>
               <th className="px-4 py-3">Homework</th>
               {isTeacher && <th className="px-4 py-3" />}
             </tr>
@@ -74,6 +78,18 @@ export default function SyllabusTable({
                     )}
                     {!lesson.lessonLink && !lesson.attachmentUrl && <span className="text-olive-300">—</span>}
                   </div>
+                </td>
+                <td className="px-4 py-3">
+                  {lesson.recordingUrl ? (
+                    <button
+                      onClick={() => setOpenVideoUrl(lesson.recordingUrl)}
+                      className="inline-flex items-center gap-1 text-pink-700 underline decoration-pink-300 underline-offset-2 hover:text-pink-500"
+                    >
+                      ▶ Переглянути
+                    </button>
+                  ) : (
+                    <span className="text-olive-300">—</span>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   {lesson.homework[0] ? (
@@ -127,6 +143,14 @@ export default function SyllabusTable({
                   {lesson.attachmentName ?? "Файл"}
                 </a>
               )}
+              {lesson.recordingUrl && (
+                <button
+                  onClick={() => setOpenVideoUrl(lesson.recordingUrl)}
+                  className="text-xs text-pink-700 underline"
+                >
+                  ▶ Запис уроку
+                </button>
+              )}
               {lesson.homework[0] && (
                 <Link
                   href={`/homework/${lesson.homework[0].id}${hwSuffix}`}
@@ -144,6 +168,8 @@ export default function SyllabusTable({
           </div>
         ))}
       </div>
+
+      {openVideoUrl && <VideoModal url={openVideoUrl} onClose={() => setOpenVideoUrl(null)} />}
     </>
   );
 }

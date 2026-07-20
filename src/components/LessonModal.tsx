@@ -23,6 +23,7 @@ export default function LessonModal({
     writing: lesson?.writing ?? "",
     status: (lesson?.status ?? "IN_PROGRESS") as LessonStatus,
     lessonLink: lesson?.lessonLink ?? "",
+    recordingUrl: lesson?.recordingUrl ?? "",
   });
   const [saving, setSaving] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -174,6 +175,15 @@ export default function LessonModal({
           value={form.lessonLink}
           onChange={(e) => set("lessonLink", e.target.value)}
           placeholder="https://"
+          className="mb-3 w-full rounded-lg border border-olive/20 px-3 py-2 outline-none focus:border-olive"
+        />
+
+        <Label>Запис уроку (YouTube)</Label>
+        <input
+          type="url"
+          value={form.recordingUrl}
+          onChange={(e) => set("recordingUrl", e.target.value)}
+          placeholder="https://youtu.be/..."
           className="mb-3 w-full rounded-lg border border-olive/20 px-3 py-2 outline-none focus:border-olive"
         />
 

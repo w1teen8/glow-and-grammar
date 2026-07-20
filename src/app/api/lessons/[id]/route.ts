@@ -33,7 +33,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   return handleApiError(async () => {
     await requireAdmin();
     const body = await req.json();
-    const { date, grammar, vocabulary, readingListening, speaking, writing, status, lessonLink, attachmentUrl, attachmentName } = body;
+    const { date, grammar, vocabulary, readingListening, speaking, writing, status, lessonLink, attachmentUrl, attachmentName, recordingUrl } = body;
 
     // Confirms a direct browser→R2 upload (see ./attachment/presign) by
     // saving the resulting URL — clean up whatever was there before.
@@ -57,6 +57,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
         ...(lessonLink !== undefined && { lessonLink }),
         ...(attachmentUrl !== undefined && { attachmentUrl }),
         ...(attachmentName !== undefined && { attachmentName }),
+        ...(recordingUrl !== undefined && { recordingUrl }),
       },
     });
 

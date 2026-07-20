@@ -16,6 +16,7 @@ export type VocabItem = {
   english: string;
   translation: string;
   sortOrder: number;
+  learned: boolean;
 };
 
 // A batch of words assigned in one lesson, with its own "learn by" date and
@@ -39,6 +40,7 @@ export type Lesson = {
   lessonLink: string | null;
   attachmentUrl: string | null;
   attachmentName: string | null;
+  recordingUrl: string | null;
   homework: HomeworkSummary[];
   vocabBlocks: VocabBlock[];
 };
