@@ -54,6 +54,9 @@ model TeacherProfile {
   philosophy  String
   specialties String
   instagram   String?
+  // The teacher's permanent Zoom room — shown to their assigned students on
+  // the cabinet home page, separate from Lesson.lessonLink (per-lesson material).
+  zoomLink    String?
   // Experience is derived at read time from this date — never store a static "X years" value.
   practicingSince DateTime
   isFounder       Boolean  @default(false)

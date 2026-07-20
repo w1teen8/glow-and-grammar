@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   return handleApiError(async () => {
     await requireAdmin();
     const body = await req.json();
-    const { name, title, bio, photoUrl, credentials, philosophy, specialties, instagram, practicingSince, isFounder, sortOrder } = body;
+    const { name, title, bio, photoUrl, credentials, philosophy, specialties, instagram, zoomLink, practicingSince, isFounder, sortOrder } = body;
 
     if (!name || !title || !bio || !practicingSince) {
       return jsonError("name, title, bio and practicingSince are required");
@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
         philosophy: philosophy ?? "",
         specialties: specialties ?? "",
         instagram: instagram ?? null,
+        zoomLink: zoomLink ?? null,
         practicingSince: new Date(practicingSince),
         isFounder: isFounder ?? false,
         sortOrder: sortOrder ?? 0,

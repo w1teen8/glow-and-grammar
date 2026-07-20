@@ -7,7 +7,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   return handleApiError(async () => {
     await requireAdmin();
     const body = await req.json();
-    const { name, title, bio, photoUrl, credentials, philosophy, specialties, instagram, practicingSince, sortOrder } = body;
+    const { name, title, bio, photoUrl, credentials, philosophy, specialties, instagram, zoomLink, practicingSince, sortOrder } = body;
 
     const teacher = await prisma.teacherProfile.update({
       where: { id: params.id },
@@ -20,6 +20,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
         ...(philosophy !== undefined && { philosophy }),
         ...(specialties !== undefined && { specialties }),
         ...(instagram !== undefined && { instagram }),
+        ...(zoomLink !== undefined && { zoomLink }),
         ...(practicingSince && { practicingSince: new Date(practicingSince) }),
         ...(sortOrder !== undefined && { sortOrder }),
       },

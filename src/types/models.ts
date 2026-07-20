@@ -78,6 +78,7 @@ export type TeacherProfile = {
   philosophy: string;
   specialties: string;
   instagram: string | null;
+  zoomLink: string | null;
   practicingSince: string;
   isFounder: boolean;
   sortOrder: number;

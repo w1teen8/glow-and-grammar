@@ -22,7 +22,7 @@ export async function GET() {
 
     const self = await prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { id: true, name: true, email: true },
+      select: { id: true, name: true, email: true, teacherId: true },
     });
     return NextResponse.json([self]);
   });

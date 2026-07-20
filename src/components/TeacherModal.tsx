@@ -21,6 +21,7 @@ export default function TeacherModal({
     philosophy: teacher?.philosophy ?? "",
     specialties: teacher?.specialties ?? "",
     instagram: teacher?.instagram ?? "",
+    zoomLink: teacher?.zoomLink ?? "",
     practicingSince: teacher?.practicingSince ? teacher.practicingSince.slice(0, 10) : new Date().toISOString().slice(0, 10),
     isFounder: teacher?.isFounder ?? false,
   });
@@ -146,6 +147,14 @@ export default function TeacherModal({
           onChange={(e) => set("instagram", e.target.value)}
           className="mb-3 w-full rounded-lg border border-olive/20 px-3 py-2 outline-none focus:border-olive"
           placeholder="https://instagram.com/..."
+        />
+
+        <Label>Постійне посилання на Zoom</Label>
+        <input
+          value={form.zoomLink}
+          onChange={(e) => set("zoomLink", e.target.value)}
+          className="mb-3 w-full rounded-lg border border-olive/20 px-3 py-2 outline-none focus:border-olive"
+          placeholder="https://zoom.us/j/..."
         />
 
         <Label>Практикує з</Label>

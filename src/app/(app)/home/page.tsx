@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import PageHeading from "@/components/PageHeading";
 import FeatureIcon, { type FeatureIconName } from "@/components/FeatureIcon";
+import type { Student, TeacherProfile } from "@/types/models";
 
 const SECTIONS: {
   href: string;
@@ -52,6 +54,20 @@ export default function HomePage() {
   const studentId = searchParams.get("studentId");
   const withStudent = (href: string) => (studentId ? `${href}?studentId=${studentId}` : href);
   const firstName = session?.user.name?.split(" ")[0];
+  const isStudent = session?.user.role === "STUDENT";
+
+  const [zoomLink, setZoomLink] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isStudent) return;
+    (async () => {
+      const [studentsRes, teachersRes] = await Promise.all([fetch("/api/students"), fetch("/api/teachers")]);
+      const [self]: Student[] = await studentsRes.json();
+      const teachers: TeacherProfile[] = await teachersRes.json();
+      const teacher = teachers.find((t) => t.id === self?.teacherId);
+      setZoomLink(teacher?.zoomLink ?? null);
+    })();
+  }, [isStudent]);
 
   return (
     <div>
@@ -68,6 +84,21 @@ export default function HomePage() {
               subtitle="Тут зберігається вся історія нашого навчання, домашні завдання та фінансовий баланс."
             />
           </div>
+
+          {isStudent && zoomLink && (
+            <a
+              href={zoomLink}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-6 inline-flex animate-fade-in-up items-center gap-2 rounded-full bg-olive-700 px-6 py-3 text-sm font-semibold text-cream shadow-soft transition-transform hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-olive-900 hover:shadow-card"
+              style={{ animationDelay: "160ms" }}
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                <path d="M4.5 6.75A2.25 2.25 0 0 1 6.75 4.5h7.5a2.25 2.25 0 0 1 2.25 2.25v10.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25V6.75Zm14.03 3.03 3.22-1.84a.75.75 0 0 1 1.12.65v6.82a.75.75 0 0 1-1.12.65l-3.22-1.84v-4.44Z" />
+              </svg>
+              Приєднатися до Zoom-заняття
+            </a>
+          )}
         </div>
       </div>
 
