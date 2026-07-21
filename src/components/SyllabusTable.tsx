@@ -11,10 +11,14 @@ export default function SyllabusTable({
   lessons,
   isTeacher,
   onEdit,
+  onDelete,
+  deletingId,
 }: {
   lessons: Lesson[];
   isTeacher: boolean;
   onEdit: (lesson: Lesson) => void;
+  onDelete?: (lesson: Lesson) => void;
+  deletingId?: string | null;
 }) {
   const searchParams = useSearchParams();
   const studentId = searchParams.get("studentId");
@@ -105,9 +109,20 @@ export default function SyllabusTable({
                 </td>
                 {isTeacher && (
                   <td className="px-4 py-3">
-                    <button onClick={() => onEdit(lesson)} className="text-olive-500 hover:text-olive-700">
-                      Редагувати
-                    </button>
+                    <div className="flex flex-wrap gap-3">
+                      <button onClick={() => onEdit(lesson)} className="text-olive-500 hover:text-olive-700">
+                        Редагувати
+                      </button>
+                      {onDelete && (
+                        <button
+                          onClick={() => onDelete(lesson)}
+                          disabled={deletingId === lesson.id}
+                          className="text-rose-500 hover:text-rose-700 disabled:opacity-50"
+                        >
+                          {deletingId === lesson.id ? "Видалення…" : "Видалити"}
+                        </button>
+                      )}
+                    </div>
                   </td>
                 )}
               </tr>
@@ -160,9 +175,20 @@ export default function SyllabusTable({
                 </Link>
               )}
               {isTeacher && (
-                <button onClick={() => onEdit(lesson)} className="ml-auto text-xs text-olive-500 underline">
-                  Редагувати
-                </button>
+                <div className="ml-auto flex gap-3">
+                  <button onClick={() => onEdit(lesson)} className="text-xs text-olive-500 underline">
+                    Редагувати
+                  </button>
+                  {onDelete && (
+                    <button
+                      onClick={() => onDelete(lesson)}
+                      disabled={deletingId === lesson.id}
+                      className="text-xs text-rose-500 underline disabled:opacity-50"
+                    >
+                      {deletingId === lesson.id ? "Видалення…" : "Видалити"}
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           </div>

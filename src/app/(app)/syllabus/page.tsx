@@ -21,6 +21,7 @@ export default function SyllabusPage() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Lesson | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const canLoad = !isTeacher || !!studentId;
 
@@ -44,6 +45,19 @@ export default function SyllabusPage() {
 
   if (isTeacher && !studentId) {
     return <EmptyState message="Оберіть учня зверху, щоб побачити її/його програму занять." icon="people" />;
+  }
+
+  async function handleDelete(lesson: Lesson) {
+    if (
+      !confirm(
+        `Видалити заняття ${new Date(lesson.date).toLocaleDateString("uk-UA")}? Разом з ним видаляться пов'язані домашні завдання та слова. Дію не можна скасувати.`
+      )
+    )
+      return;
+    setDeletingId(lesson.id);
+    await fetch(`/api/lessons/${lesson.id}`, { method: "DELETE" });
+    setDeletingId(null);
+    load();
   }
 
   return (
@@ -76,6 +90,8 @@ export default function SyllabusPage() {
             setEditing(lesson);
             setModalOpen(true);
           }}
+          onDelete={handleDelete}
+          deletingId={deletingId}
         />
       )}
 

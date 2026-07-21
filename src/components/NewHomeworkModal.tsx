@@ -1,19 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Lesson } from "@/types/models";
+import type { Homework, Lesson } from "@/types/models";
 
 export default function NewHomeworkModal({
   studentId,
+  homework,
   onClose,
   onCreated,
 }: {
   studentId: string;
+  homework?: Homework | null;
   onClose: () => void;
   onCreated: () => void;
 }) {
   const [lessons, setLessons] = useState<Lesson[]>([]);
-  const [form, setForm] = useState({ lessonId: "", title: "", deadline: "", taskContent: "" });
+  const [form, setForm] = useState({
+    lessonId: homework?.lessonId ?? "",
+    title: homework?.title ?? "",
+    deadline: homework?.deadline ? homework.deadline.slice(0, 16) : "",
+    taskContent: homework?.taskContent ?? "",
+  });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -26,11 +33,19 @@ export default function NewHomeworkModal({
     e.preventDefault();
     if (!form.lessonId) return;
     setSaving(true);
-    await fetch("/api/homework", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, studentId, vocabItems: [] }),
-    });
+    if (homework) {
+      await fetch(`/api/homework/${homework.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+    } else {
+      await fetch("/api/homework", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, studentId, vocabItems: [] }),
+      });
+    }
     setSaving(false);
     onCreated();
   }
@@ -42,15 +57,16 @@ export default function NewHomeworkModal({
         className="w-full max-w-lg animate-scale-in rounded-xl2 border border-olive/15 bg-cream p-6 shadow-card"
       >
         <h2 className="mb-4 font-sans text-xl font-extrabold uppercase tracking-tight text-olive-900">
-          Нове домашнє завдання
+          {homework ? "Редагувати завдання" : "Нове домашнє завдання"}
         </h2>
 
         <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-olive-400">Заняття</label>
         <select
           required
+          disabled={!!homework}
           value={form.lessonId}
           onChange={(e) => setForm((f) => ({ ...f, lessonId: e.target.value }))}
-          className="mb-3 w-full rounded-lg border border-olive/20 px-3 py-2 outline-none focus:border-olive"
+          className="mb-3 w-full rounded-lg border border-olive/20 px-3 py-2 outline-none focus:border-olive disabled:bg-olive/5 disabled:text-olive-400"
         >
           <option value="">
             {lessons.length === 0 ? "Спершу додайте заняття в Syllabus Tracker" : "Оберіть заняття…"}
@@ -102,7 +118,7 @@ export default function NewHomeworkModal({
             disabled={saving || lessons.length === 0}
             className="rounded-full bg-pink px-5 py-2 text-sm font-medium text-olive-900 shadow-soft disabled:opacity-60"
           >
-            {saving ? "Збереження…" : "Створити"}
+            {saving ? "Збереження…" : homework ? "Зберегти" : "Створити"}
           </button>
         </div>
       </form>

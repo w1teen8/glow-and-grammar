@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import StatusBadge from "@/components/StatusBadge";
 import AudioRecorder from "@/components/AudioRecorder";
 import PhotoAnswer from "@/components/PhotoAnswer";
 import VocabList from "@/components/VocabList";
 import FeedbackSection from "@/components/FeedbackSection";
+import NewHomeworkModal from "@/components/NewHomeworkModal";
 import type { Homework, HomeworkStatus } from "@/types/models";
 
 const STATUS_OPTIONS: { value: HomeworkStatus; label: string }[] = [
@@ -22,6 +23,7 @@ export default function HomeworkDetailPage() {
   const { data: session } = useSession();
   const params = useParams<{ id: string }>();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const studentId = searchParams.get("studentId");
   const isTeacher = session?.user.role === "TEACHER";
 
@@ -29,6 +31,8 @@ export default function HomeworkDetailPage() {
   const [loading, setLoading] = useState(true);
   const [answerText, setAnswerText] = useState("");
   const [savingText, setSavingText] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -68,11 +72,20 @@ export default function HomeworkDetailPage() {
     load();
   }
 
+  const backHref = studentId ? `/homework?studentId=${studentId}` : "/homework";
+
+  async function handleDelete() {
+    if (!homework) return;
+    if (!confirm(`Видалити завдання «${homework.title}»? Дію не можна скасувати.`)) return;
+    setDeleting(true);
+    await fetch(`/api/homework/${homework.id}`, { method: "DELETE" });
+    router.push(backHref);
+  }
+
   if (loading) return <p className="text-olive-400">Завантаження…</p>;
   if (!homework) return <p className="text-rose-600">Завдання не знайдено.</p>;
 
   const isDone = homework.status === "DONE";
-  const backHref = studentId ? `/homework?studentId=${studentId}` : "/homework";
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -90,6 +103,23 @@ export default function HomeworkDetailPage() {
               Дедлайн:{" "}
               {new Date(homework.deadline).toLocaleString("uk-UA", { dateStyle: "medium", timeStyle: "short" })}
             </p>
+            {isTeacher && (
+              <div className="mt-2 flex gap-3">
+                <button
+                  onClick={() => setEditModalOpen(true)}
+                  className="text-xs text-olive-500 underline hover:text-olive-700"
+                >
+                  Редагувати
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="text-xs text-rose-500 underline hover:text-rose-700 disabled:opacity-50"
+                >
+                  {deleting ? "Видалення…" : "Видалити"}
+                </button>
+              </div>
+            )}
           </div>
           <StatusBadge kind="homework" value={homework.status} />
         </div>
@@ -195,6 +225,18 @@ export default function HomeworkDetailPage() {
           <FeedbackSection homework={homework} isTeacher={!!isTeacher} onSaved={load} />
         </div>
       </div>
+
+      {editModalOpen && (
+        <NewHomeworkModal
+          studentId={homework.studentId}
+          homework={homework}
+          onClose={() => setEditModalOpen(false)}
+          onCreated={() => {
+            setEditModalOpen(false);
+            load();
+          }}
+        />
+      )}
     </div>
   );
 }
