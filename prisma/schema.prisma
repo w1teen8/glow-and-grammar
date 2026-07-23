@@ -29,6 +29,9 @@ model User {
   name         String
   role         String
   createdAt    DateTime @default(now())
+  // For a STUDENT: their personal permanent Zoom room, shown on their
+  // cabinet home page — set individually, not shared via their teacher.
+  zoomLink     String?
 
   // For a STUDENT: the teacher assigned to them. For a TEACHER: unused.
   teacher   TeacherProfile? @relation("StudentsOfTeacher", fields: [teacherId], references: [id])
@@ -59,9 +62,6 @@ model TeacherProfile {
   philosophy  String
   specialties String
   instagram   String?
-  // The teacher's permanent Zoom room — shown to their assigned students on
-  // the cabinet home page, separate from Lesson.lessonLink (per-lesson material).
-  zoomLink    String?
   // Experience is derived at read time from this date — never store a static "X years" value.
   practicingSince DateTime
   isFounder       Boolean  @default(false)

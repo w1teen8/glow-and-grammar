@@ -16,14 +16,14 @@ export default function AdminPage() {
   const [teachers, setTeachers] = useState<TeacherProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", password: "", teacherId: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", teacherId: "", zoomLink: "" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resettingId, setResettingId] = useState<string | null>(null);
   const [revealed, setRevealed] = useState<{ id: string; password: string } | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ name: "", email: "", teacherId: "" });
+  const [editForm, setEditForm] = useState({ name: "", email: "", teacherId: "", zoomLink: "" });
   const [savingEdit, setSavingEdit] = useState(false);
 
   async function load() {
@@ -53,7 +53,7 @@ export default function AdminPage() {
       setError(data?.error ?? "Не вдалося створити учня.");
       return;
     }
-    setForm({ name: "", email: "", password: "", teacherId: "" });
+    setForm({ name: "", email: "", password: "", teacherId: "", zoomLink: "" });
     setShowForm(false);
     load();
   }
@@ -82,7 +82,12 @@ export default function AdminPage() {
 
   function startEdit(student: Student) {
     setEditingId(student.id);
-    setEditForm({ name: student.name, email: student.email, teacherId: student.teacherId ?? "" });
+    setEditForm({
+      name: student.name,
+      email: student.email,
+      teacherId: student.teacherId ?? "",
+      zoomLink: student.zoomLink ?? "",
+    });
   }
 
   async function saveEdit() {
@@ -199,6 +204,18 @@ export default function AdminPage() {
                 ))}
               </select>
             </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-olive-400">
+                Постійне посилання на Zoom
+              </label>
+              <input
+                type="url"
+                value={form.zoomLink}
+                onChange={(e) => setForm((f) => ({ ...f, zoomLink: e.target.value }))}
+                placeholder="https://zoom.us/j/..."
+                className="w-full rounded-lg border border-olive/20 px-3 py-2 outline-none focus:border-olive"
+              />
+            </div>
           </div>
           {error && <p className="mt-3 text-sm text-rose-600">{error}</p>}
           <button
@@ -223,6 +240,7 @@ export default function AdminPage() {
                 <th className="px-4 py-3">Ім&apos;я</th>
                 <th className="px-4 py-3">Email</th>
                 <th className="px-4 py-3">Викладач</th>
+                <th className="px-4 py-3">Zoom</th>
                 <th className="px-4 py-3">Логін і пароль</th>
                 <th className="px-4 py-3">Перейти до</th>
                 <th className="px-4 py-3" />
@@ -266,6 +284,15 @@ export default function AdminPage() {
                           ))}
                         </select>
                       </td>
+                      <td className="px-4 py-3">
+                        <input
+                          type="url"
+                          value={editForm.zoomLink}
+                          onChange={(e) => setEditForm((f) => ({ ...f, zoomLink: e.target.value }))}
+                          placeholder="https://zoom.us/j/..."
+                          className="w-full rounded-lg border border-olive/20 px-2 py-1.5 text-sm outline-none focus:border-olive"
+                        />
+                      </td>
                       <td className="px-4 py-3" colSpan={2}>
                         <div className="flex flex-wrap gap-3 text-xs">
                           <button
@@ -299,6 +326,20 @@ export default function AdminPage() {
                       </td>
                       <td className="px-4 py-3 text-olive-500">{s.email}</td>
                       <td className="px-4 py-3 text-olive-500">{teacherName(s.teacherId)}</td>
+                      <td className="px-4 py-3">
+                        {s.zoomLink ? (
+                          <a
+                            href={s.zoomLink}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-xs text-pink-700 underline decoration-pink-300 underline-offset-2 hover:text-pink-500"
+                          >
+                            Відкрити
+                          </a>
+                        ) : (
+                          <span className="text-xs text-olive-300">—</span>
+                        )}
+                      </td>
                       <td className="px-4 py-3">
                     {revealed?.id === s.id ? (
                       <div className="flex animate-scale-in items-center gap-2">

@@ -72,7 +72,13 @@ export type PaymentEntry = {
   amount: number | null;
 };
 
-export type Student = { id: string; name: string; email: string; teacherId?: string | null };
+export type Student = {
+  id: string;
+  name: string;
+  email: string;
+  teacherId?: string | null;
+  zoomLink?: string | null;
+};
 
 export type TeacherProfile = {
   id: string;
@@ -84,7 +90,6 @@ export type TeacherProfile = {
   philosophy: string;
   specialties: string;
   instagram: string | null;
-  zoomLink: string | null;
   practicingSince: string;
   isFounder: boolean;
   sortOrder: number;

@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import PageHeading from "@/components/PageHeading";
 import FeatureIcon, { type FeatureIconName } from "@/components/FeatureIcon";
-import type { Student, TeacherProfile } from "@/types/models";
+import type { Student } from "@/types/models";
 
 const SECTIONS: {
   href: string;
@@ -60,13 +60,9 @@ export default function HomePage() {
 
   useEffect(() => {
     if (!isStudent) return;
-    (async () => {
-      const [studentsRes, teachersRes] = await Promise.all([fetch("/api/students"), fetch("/api/teachers")]);
-      const [self]: Student[] = await studentsRes.json();
-      const teachers: TeacherProfile[] = await teachersRes.json();
-      const teacher = teachers.find((t) => t.id === self?.teacherId);
-      setZoomLink(teacher?.zoomLink ?? null);
-    })();
+    fetch("/api/students")
+      .then((r) => r.json())
+      .then(([self]: Student[]) => setZoomLink(self?.zoomLink ?? null));
   }, [isStudent]);
 
   return (

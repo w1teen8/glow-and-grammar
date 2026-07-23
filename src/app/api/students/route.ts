@@ -15,7 +15,7 @@ export async function GET() {
     if (session.user.role === "TEACHER") {
       const students = await prisma.user.findMany({
         where: { role: "STUDENT", ...studentScopeFilter(session) },
-        select: { id: true, name: true, email: true, createdAt: true, teacherId: true },
+        select: { id: true, name: true, email: true, createdAt: true, teacherId: true, zoomLink: true },
         orderBy: { name: "asc" },
       });
       return NextResponse.json(students);
@@ -23,7 +23,7 @@ export async function GET() {
 
     const self = await prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { id: true, name: true, email: true, teacherId: true },
+      select: { id: true, name: true, email: true, teacherId: true, zoomLink: true },
     });
     return NextResponse.json([self]);
   });
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   return handleApiError(async () => {
     await requireAdmin();
     const body = await req.json();
-    const { name, email, password, teacherId } = body;
+    const { name, email, password, teacherId, zoomLink } = body;
 
     if (!name || !email || !password) {
       return jsonError("name, email and password are required");
@@ -52,8 +52,9 @@ export async function POST(req: NextRequest) {
         passwordEncrypted: encryptPassword(password),
         role: "STUDENT",
         teacherId: teacherId ?? null,
+        zoomLink: zoomLink ?? null,
       },
-      select: { id: true, name: true, email: true, createdAt: true, teacherId: true },
+      select: { id: true, name: true, email: true, createdAt: true, teacherId: true, zoomLink: true },
     });
 
     return NextResponse.json(student, { status: 201 });
