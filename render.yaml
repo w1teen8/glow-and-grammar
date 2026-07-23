@@ -9,13 +9,15 @@ services:
     runtime: node
     plan: free
     buildCommand: npm install --include=dev && npx prisma generate && npm run build
+    # Runs once per deploy (after build, before the new instance takes
+    # traffic) — not on every process restart. Db push/seed used to live in
+    # startCommand, which meant they reran every time the free instance woke
+    # from spin-down; a brief DB connection hiccup during that window would
+    # kill the whole boot and crash-loop the service.
+    preDeployCommand: npx prisma db push --accept-data-loss --skip-generate && npm run db:seed
     # RENDER_EXTERNAL_URL is injected automatically by Render for every web
     # service — reused here as NEXTAUTH_URL so nothing has to be hardcoded.
-    startCommand: >-
-      sh -c "export NEXTAUTH_URL=$RENDER_EXTERNAL_URL &&
-      npx prisma db push --accept-data-loss --skip-generate &&
-      npm run db:seed &&
-      npm run start"
+    startCommand: sh -c "export NEXTAUTH_URL=$RENDER_EXTERNAL_URL && npm run start"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
