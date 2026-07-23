@@ -228,17 +228,8 @@ export default async function RootPage() {
         <p className="text-base font-medium text-olive-600">© {new Date().getFullYear()} Glow &amp; Grammar</p>
         <p className="mt-2 text-base">Розробка сайту та адміністрування — Даніїл Заболотний</p>
         <p className="mt-1 text-base">
-          <a href="tel:+380683054747" className="text-olive-500 underline hover:text-olive-700">
-            +380 68 305 47 47
-          </a>{" "}
-          ·{" "}
-          <a
-            href="https://t.me/w1teen0"
-            target="_blank"
-            rel="noreferrer"
-            className="text-olive-500 underline hover:text-olive-700"
-          >
-            Telegram @w1teen0
+          <a href="mailto:w1teen111@gmail.com" className="text-olive-500 underline hover:text-olive-700">
+            w1teen111@gmail.com
           </a>
         </p>
       </footer>
